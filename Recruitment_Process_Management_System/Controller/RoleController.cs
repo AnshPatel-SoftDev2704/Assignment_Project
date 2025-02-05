@@ -7,7 +7,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;

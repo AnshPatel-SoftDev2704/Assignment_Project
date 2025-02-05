@@ -20,7 +20,6 @@ namespace Recruitment_Process_Management_System.Services
 
         public User saveUser(UserDTO userDTO)
         {
-            Console.WriteLine(userDTO.Role_id);
             return _userRepository.saveUser(userDTO);
         }
 

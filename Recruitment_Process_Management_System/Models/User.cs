@@ -8,9 +8,6 @@ public class User
     [Key]
     public int User_id {get; set;}
     public string name{get;set;}
-    public int Role_id{get;set;}
-    [ForeignKey("Role_id")]
-    public Role Role{get;set;}
     public string email{get;set;}
     public string contact{get;set;}
     public string password{get;set;}

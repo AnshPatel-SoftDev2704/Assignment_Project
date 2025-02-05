@@ -26,28 +26,24 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public IEnumerable<User> getAllUser()
         {
-            var users = _context.Users.Include(u => u.Role).ToList();
+            var users = _context.Users.ToList();
             return users;
         }
 
         public User getUserById(int userId)
         {
-            var user = _context.Users.Include(u => u.Role).FirstOrDefault(u => u.User_id == userId);
+            var user = _context.Users.FirstOrDefault(u => u.User_id == userId);
             return user;
         }
 
         public User saveUser(UserDTO userDTO)
         {
             var existingUser = _context.Users.FirstOrDefault(u => u.name == userDTO.name);
-            var role = _context.Roles.FirstOrDefault(r => r.Role_id == userDTO.Role_id);
             if(existingUser != null)
                 return null;
-            Console.WriteLine(userDTO.Role_id);
             User user = new User
             {
                 name = userDTO.name,
-                Role_id = userDTO.Role_id,
-                Role = role,
                 email = userDTO.email,
                 contact = userDTO.contact,
                 password = userDTO.password,
@@ -62,13 +58,10 @@ namespace Recruitment_Process_Management_System.Repositories
         public User updateUser(int userId, UserDTO userDTO)
         {
             var existingUser = _context.Users.FirstOrDefault(u => u.User_id == userId);
-            var role = _context.Roles.FirstOrDefault(r => r.Role_id == userDTO.Role_id);
             if(existingUser == null)
             return null;
 
             existingUser.name = userDTO.name;
-            existingUser.Role_id = userDTO.Role_id;
-            existingUser.Role = role;
             existingUser.email = userDTO.email;
             existingUser.contact = userDTO.contact;
             existingUser.password = userDTO.password;

@@ -38,11 +38,6 @@ namespace Recruitment_Process_Management_System.Controllers
         [HttpPost("saveUser")]
         public ActionResult<User> saveUser([FromBody] UserDTO userDTO)
         {
-            var role = _roleService.getRoleById(userDTO.Role_id);
-            if(role == null)
-            return BadRequest("Invalid Role ID");      
-               
-            Console.WriteLine(userDTO.Role_id);
             var user1 = _userService.saveUser(userDTO);
             return Ok(user1);
         }
@@ -50,8 +45,8 @@ namespace Recruitment_Process_Management_System.Controllers
         [HttpPut("updateUser/{userId}")]
         public ActionResult<User> updateUser(int userId,UserDTO userDTO)
         {
-                var user = _userService.updateUser(userId,userDTO);
-                return Ok(user);
+            var user = _userService.updateUser(userId,userDTO);
+            return Ok(user);
             
         }
 
