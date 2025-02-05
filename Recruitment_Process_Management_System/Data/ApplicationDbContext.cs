@@ -10,6 +10,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<User> Users {get;set;}
         public DbSet<Role> Roles {get;set;}
         public DbSet<Skill> Skills {get;set;}
+        public DbSet<Job_Status> Job_Status {get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
