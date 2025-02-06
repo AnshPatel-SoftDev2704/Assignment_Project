@@ -33,6 +33,8 @@ builder.Services.AddScoped<IRequired_Job_SkillService,Required_Job_SkillService>
 builder.Services.AddScoped<IRequired_Job_SkillRepository, Required_Job_SkillRepository>();
 builder.Services.AddScoped<IPreferred_Job_SkillService,Preferred_Job_SkillService>();
 builder.Services.AddScoped<IPreferred_Job_SkillRepository, Preferred_Job_SkillRepository>();
+builder.Services.AddScoped<ICandidate_DetailsService,Candidate_DetailsService>();
+builder.Services.AddScoped<ICandidate_DetailsRepository, Candidate_DetailsRepository>();
 builder.Services.AddScoped<AuthService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
