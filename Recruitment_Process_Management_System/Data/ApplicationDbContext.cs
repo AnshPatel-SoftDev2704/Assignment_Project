@@ -17,6 +17,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<Required_Job_Skill> Required_Job_Skill{get;set;}
         public DbSet<Preferred_Job_Skill> Preferred_Job_Skill{get;set;}
         public DbSet<Candidate_Details> Candidate_Details{get;set;}
+        public DbSet<Candidate_Skills> Candidate_Skills{get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
