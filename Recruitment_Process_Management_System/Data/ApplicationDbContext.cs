@@ -20,6 +20,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<Candidate_Skills> Candidate_Skills{get;set;}
         public DbSet<Application_Status> Application_Status{get;set;}
         public DbSet<Candidate_Application_Status> Candidate_Application_Status{get;set;}
+        public DbSet<Interview_Type> Interview_Type {get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
