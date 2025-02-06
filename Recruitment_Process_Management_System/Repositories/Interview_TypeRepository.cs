@@ -4,7 +4,7 @@ using Microsoft.VisualBasic;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
-    public class Interview_TyperRepository : IInterview_TyperRepository
+    public class Interview_TyperRepository : IInterview_TypeRepository
     {
         private readonly ApplicationDbContext _context;
 

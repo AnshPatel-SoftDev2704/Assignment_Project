@@ -5,9 +5,9 @@ namespace Recruitment_Process_Management_System.Services
 {
     public class Interview_TypeService : IInterview_TypeService
     {
-        private readonly IInterview_TyperRepository _interview_TyperRepository;
+        private readonly IInterview_TypeRepository _interview_TyperRepository;
 
-        public Interview_TypeService(IInterview_TyperRepository interview_TyperRepository)
+        public Interview_TypeService(IInterview_TypeRepository interview_TyperRepository)
         {
             _interview_TyperRepository = interview_TyperRepository;
         }
