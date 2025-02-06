@@ -52,7 +52,7 @@ namespace Recruitment_Process_Management_System.Controllers
             return Ok(response); 
         }
 
-        [HttpDelete("Candidate_Application_Status_id")]
+        [HttpDelete("{Candidate_Application_Status_id}")]
         public ActionResult<Candidate_Application_Status> deleteCandidate_Application_Status(int Candidate_Application_Status_id)
         {
             var response = _candidate_Application_StatusService.deleteCandidate_Application_Status(Candidate_Application_Status_id);
