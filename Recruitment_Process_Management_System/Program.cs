@@ -49,6 +49,8 @@ builder.Services.AddScoped<IInterviewService,InterviewService>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
 builder.Services.AddScoped<IInterviewerService,InterviewerService>();
 builder.Services.AddScoped<IInterviewerRepository, InterviewerRepository>();
+builder.Services.AddScoped<IDocument_TypeService,Document_TypeService>();
+builder.Services.AddScoped<IDocument_TypeRepository, Document_TypeRespository>();
 builder.Services.AddScoped<AuthService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
