@@ -1,6 +1,5 @@
 using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Mvc;
-using Recruitment_Process_Management_System.mdoels;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
 

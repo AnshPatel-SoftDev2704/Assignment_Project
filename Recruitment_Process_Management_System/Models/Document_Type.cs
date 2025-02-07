@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Recruitment_Process_Management_System.mdoels;
+namespace Recruitment_Process_Management_System.Models;
 
 public class Document_Type
 {
