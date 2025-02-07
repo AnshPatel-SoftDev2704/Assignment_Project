@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using Recruitment_Process_Management_System.mdoels;
 using Recruitment_Process_Management_System.Models;
 namespace Recruitment_Process_Management_System.data
 {
@@ -24,6 +25,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<Interview_Status> Interview_Status{get;set;}
         public DbSet<Interview> Interview{get;set;}
         public DbSet<Interviewer> Interviewer{get;set;}
+        public DbSet<Document_Type> Document_Type{get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
