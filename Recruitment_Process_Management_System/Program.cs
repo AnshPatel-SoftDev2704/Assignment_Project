@@ -43,8 +43,10 @@ builder.Services.AddScoped<ICandidate_Application_StatusService,Candidate_Applic
 builder.Services.AddScoped<ICandidate_Application_StatusRepository, Candidate_Application_StatusRepository>();
 builder.Services.AddScoped<IInterview_TypeService,Interview_TypeService>();
 builder.Services.AddScoped<IInterview_TypeRepository, Interview_TyperRepository>();
-builder.Services.AddScoped<IInterview_StatusService,Interivew_StatusService>();
+builder.Services.AddScoped<IInterview_StatusService,Interview_StatusService>();
 builder.Services.AddScoped<IInterview_StatusRepository, Interview_StatusRepository>();
+builder.Services.AddScoped<IInterviewService,InterviewService>();
+builder.Services.AddScoped<IInterviewRepository, InterviewReposiory>();
 builder.Services.AddScoped<AuthService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
