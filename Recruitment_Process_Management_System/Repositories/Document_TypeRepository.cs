@@ -1,6 +1,5 @@
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.data;
-using Recruitment_Process_Management_System.mdoels;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
