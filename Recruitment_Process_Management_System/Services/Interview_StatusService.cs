@@ -3,11 +3,11 @@ using Recruitment_Process_Management_System.Repositories;
 
 namespace Recruitment_Process_Management_System.Services
 {
-    public class Interivew_StatusService : IInterview_StatusService
+    public class Interview_StatusService : IInterview_StatusService
     {
         private readonly IInterview_StatusRepository _interview_StatusRepository;
 
-        public Interivew_StatusService(IInterview_StatusRepository interview_StatusRepository)
+        public Interview_StatusService(IInterview_StatusRepository interview_StatusRepository)
         {
             _interview_StatusRepository = interview_StatusRepository;
         }
