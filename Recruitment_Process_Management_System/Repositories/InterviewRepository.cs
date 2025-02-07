@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
-    public class InterviewReposiory : IInterviewRepository
+    public class InterviewRepository : IInterviewRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public InterviewReposiory(ApplicationDbContext context)
+        public InterviewRepository(ApplicationDbContext context)
         {
             _context = context;
         }
