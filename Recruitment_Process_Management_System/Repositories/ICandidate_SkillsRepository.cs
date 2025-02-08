@@ -4,14 +4,14 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface ICandidate_SkillsRepostiroy
     {
-        IEnumerable<Candidate_Skills> getAllCandidate_Skills();
+        Task<IEnumerable<Candidate_Skills>> getAllCandidate_Skills();
 
-        Candidate_Skills getAllCandidate_SkillById(int Candidate_Skills_id);
+        Task<Candidate_Skills> getAllCandidate_SkillById(int Candidate_Skills_id);
 
-        Candidate_Skills saveCandidate_Skill(Candidate_SkillsDTO candidate_SkillsDTO);
+        Task<Candidate_Skills> saveCandidate_Skill(Candidate_Skills candidate_Skills);
 
-        Candidate_Skills updateCandidate_Skill(int Candidate_Skills_id,Candidate_SkillsDTO candidate_SkillsDTO);
+        Task<Candidate_Skills> updateCandidate_Skill(Candidate_Skills candidate_Skills);
 
-        bool deleteCandidate_Skill(int Candidate_Skills_id);
+        Task<bool> deleteCandidate_Skill(Candidate_Skills candidate_Skills);
     }
 }

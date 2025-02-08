@@ -1,6 +1,7 @@
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.data;
 using Microsoft.VisualBasic;
+using System.Threading.Tasks;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
@@ -13,34 +14,30 @@ namespace Recruitment_Process_Management_System.Repositories
             _context = context;
         }
 
-        public bool deleteApplication_Status(int Application_Status_id)
+        public async Task<bool> deleteApplication_Status(Application_Status application_Status)
         {
-            var applicationStatus = _context.Application_Status.FirstOrDefault(a => a.Application_Status_id == Application_Status_id);
-            if(applicationStatus == null)
-            return false;
-
-            _context.Application_Status.Remove(applicationStatus);
+            _context.Application_Status.Remove(application_Status);
             _context.SaveChanges();
             return true;
         }
 
-        public IEnumerable<Application_Status> getAllApplication_Status()
+        public async Task<IEnumerable<Application_Status>> getAllApplication_Status()
         {
             var applicationStatuses = _context.Application_Status.ToList();
             return applicationStatuses;
         }
 
-        public Application_Status getApplication_StatusById(int Application_Status_id)
+        public async Task<Application_Status> getApplication_StatusById(int Application_Status_id)
         {
             var applicationStatus = _context.Application_Status.FirstOrDefault(a => a.Application_Status_id == Application_Status_id);
             return applicationStatus;
         }
 
-        public Application_Status saveApplication_Status(Application_Status application_Status)
+        public async Task<Application_Status> saveApplication_Status(Application_Status application_Status)
         {
             var applicationStatus = _context.Application_Status.FirstOrDefault(a => a.Application_Status_Name == application_Status.Application_Status_Name);
             if(applicationStatus != null)
-            return null;
+            throw new Exception("Application Station is Already Present");
 
             application_Status.Created_at = DateTime.Now;
             application_Status.Updated_at = DateTime.Now;
@@ -49,17 +46,11 @@ namespace Recruitment_Process_Management_System.Repositories
             return application_Status;
         }
 
-        public Application_Status updateApplication_Status(int Application_Status_id, Application_Status application_Status)
+        public async Task<Application_Status> updateApplication_Status(Application_Status application_Status)
         {
-            var existingApplicationStatus = _context.Application_Status.FirstOrDefault(a => a.Application_Status_id == Application_Status_id);
-            if(application_Status == null)
-            return null;
-
-            existingApplicationStatus.Application_Status_Name = application_Status.Application_Status_Name;
-            existingApplicationStatus.Application_Status_Description = application_Status.Application_Status_Description;
-            existingApplicationStatus.Updated_at = DateTime.Now;
+            _context.Application_Status.Update(application_Status);
             _context.SaveChanges();
-            return existingApplicationStatus;
+            return application_Status;
         }
     }
 }

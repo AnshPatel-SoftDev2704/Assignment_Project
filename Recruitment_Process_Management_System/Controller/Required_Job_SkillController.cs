@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client.Extensibility;
 using Recruitment_Process_Management_System.Models;
@@ -16,50 +17,82 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Required_Job_Skill>> getAllRequired_Job_Skill()
+        public async Task<ActionResult<IEnumerable<Required_Job_Skill>>> getAllRequired_Job_Skill()
         {
-            var response = _required_Job_SkillService.getAllRequired_Job_Skill();
-            return Ok(response);
+            try{
+                var response = await _required_Job_SkillService.getAllRequired_Job_Skill();
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Required_Job_Skill_id}")]
-        public ActionResult<Required_Job_Skill> getRequired_Job_SkillById(int Required_Job_Skill_id)
+        public async Task<ActionResult<Required_Job_Skill>> getRequired_Job_SkillById(int Required_Job_Skill_id)
         {
-            var response = _required_Job_SkillService.getRequired_Job_SkillById(Required_Job_Skill_id);
-            if(response == null)
-            return NotFound("Required Job Skill Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _required_Job_SkillService.getRequired_Job_SkillById(Required_Job_Skill_id);
+                if(response == null)
+                return NotFound("Required Job Skill Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult<Required_Job_Skill> saveRequired_Job_Skill(Required_Job_SkillDTO required_Job_SkillDTO)
+        public async Task<ActionResult<Required_Job_Skill>> saveRequired_Job_Skill(Required_Job_SkillDTO required_Job_SkillDTO)
         {
-            var response = _required_Job_SkillService.saveRequired_Job_Skill(required_Job_SkillDTO);
-            if(response == null)
-            return NotFound("Job or Skill Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _required_Job_SkillService.saveRequired_Job_Skill(required_Job_SkillDTO);
+                if(response == null)
+                return NotFound("Job or Skill Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut("{Required_Job_Skill_id}")]
-        public ActionResult<Required_Job_Skill> updateRequired_Job_Skill(int Required_Job_Skill_id,Required_Job_SkillDTO required_Job_SkillDTO)
+        public async Task<ActionResult<Required_Job_Skill>> updateRequired_Job_Skill(int Required_Job_Skill_id,Required_Job_SkillDTO required_Job_SkillDTO)
         {
-            var response = _required_Job_SkillService.updateRequired_Job_Skill(Required_Job_Skill_id,required_Job_SkillDTO);
-            if(response == null)
-            return NotFound("Job or Skill Not Found");
-            else
-            return Ok(response);
+            try{
+                 var response = await _required_Job_SkillService.updateRequired_Job_Skill(Required_Job_Skill_id,required_Job_SkillDTO);
+                if(response == null)
+                return NotFound("Job or Skill Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         [HttpDelete("{Required_Job_Skill_id}")]
-        public ActionResult<bool> deleteRequired_Job_Skill(int Required_Job_Skill_id)
+        public async Task<ActionResult<bool>> deleteRequired_Job_Skill(int Required_Job_Skill_id)
         {
-            var response = _required_Job_SkillService.deleteRequired_Job_Skill(Required_Job_Skill_id);
-            if(response)
-            return Ok("Required Job Skill Deleted Successfully");
-            else
-            return NotFound("Required Job Skill Not Found");
+            try{
+                var response = await _required_Job_SkillService.deleteRequired_Job_Skill(Required_Job_Skill_id);
+                if(response)
+                return Ok("Required Job Skill Deleted Successfully");
+                else
+                return NotFound("Required Job Skill Not Found");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

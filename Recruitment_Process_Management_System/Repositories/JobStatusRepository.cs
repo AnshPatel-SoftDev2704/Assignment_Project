@@ -1,6 +1,7 @@
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.data;
 using Microsoft.VisualBasic;
+using System.Threading.Tasks;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
@@ -13,56 +14,39 @@ namespace Recruitment_Process_Management_System.Repositories
             _context = context;
         }
 
-        public bool deleteJobStatus(int Job_Status_id)
+        public async Task<bool> deleteJobStatus(Job_Status jobStatus)
         {
-            var isJobStatusExist = _context.Job_Status.FirstOrDefault(js => js.Job_Status_id == Job_Status_id);
-            if(isJobStatusExist == null)
-            return false;
-
-            _context.Job_Status.Remove(isJobStatusExist);
+            _context.Job_Status.Remove(jobStatus);
             _context.SaveChanges();
             return true;
         }
 
-        public IEnumerable<Job_Status> getAllJobStatus()
+        public async Task<IEnumerable<Job_Status>> getAllJobStatus()
         {
             return _context.Job_Status.ToList();
         }
 
-        public Job_Status GetJobStatusById(int Job_Status_id)
+        public async Task<Job_Status> GetJobStatusById(int Job_Status_id)
         {
             var existingJobStatus = _context.Job_Status.FirstOrDefault(js => js.Job_Status_id == Job_Status_id);
             return existingJobStatus;
         }
 
-        public Job_Status saveJobStatus(Job_Status jobStatus)
+        public async Task<Job_Status> saveJobStatus(Job_Status jobStatus)
         {
             var existingJobStatus = _context.Job_Status.FirstOrDefault(js => js.Job_Status_name == jobStatus.Job_Status_name);
             if(existingJobStatus != null)
             return null;
-            Job_Status job_Status = new Job_Status{
-                Job_Status_name = jobStatus.Job_Status_name,
-                Job_Status_Description = jobStatus.Job_Status_Description,
-                Created_at = DateTime.Now,
-                Updated_at = DateTime.Now
-            };
-            _context.Job_Status.Add(job_Status);
+            _context.Job_Status.Add(jobStatus);
             _context.SaveChanges();
             return jobStatus;
         }
 
-        public Job_Status updateJobStatus(int Job_Status_id, Job_Status jobStatus)
+        public async Task<Job_Status> updateJobStatus(Job_Status jobStatus)
         {
-            var existingJobStatus = _context.Job_Status.FirstOrDefault(js => js.Job_Status_id == Job_Status_id);
-            if(existingJobStatus == null)
-            return null;
-
-            existingJobStatus.Job_Status_name = jobStatus.Job_Status_name;
-            existingJobStatus.Job_Status_Description = jobStatus.Job_Status_Description;
-            existingJobStatus.Updated_at = DateTime.Now;
+            _context.Job_Status.Update(jobStatus);
             _context.SaveChanges();
-            return existingJobStatus;
+            return jobStatus;
         }
     }
-    
 }

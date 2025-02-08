@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -24,79 +25,112 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Document_Submitted>> getAllDocument_Submitted()
+        public async Task<ActionResult<IEnumerable<Document_Submitted>>> getAllDocument_Submitted()
         {
-            var responses = _document_SubmittedService.getAllDocument_Submitted();
-            return Ok(responses);
+            try{
+                var responses = await _document_SubmittedService.getAllDocument_Submitted();
+                return Ok(responses);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Document_Submitted_id}")]
-        public ActionResult<Document_Submitted> getDocument_SubmittedById(int Document_Submitted_id)
+        public async Task<ActionResult<Document_Submitted>> getDocument_SubmittedById(int Document_Submitted_id)
         {
-            var response = _document_SubmittedService.getDocument_SubmittedById(Document_Submitted_id);
-            if(response == null)
-            return NotFound("Submitted Document Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _document_SubmittedService.getDocument_SubmittedById(Document_Submitted_id);
+                if(response == null)
+                return NotFound("Submitted Document Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPost]
-        public ActionResult<Document_Submitted> saveDocument_Submitted(Document_SubmittedDTO document_SubmittedDTO)
+        public async Task<ActionResult<Document_Submitted>> saveDocument_Submitted(Document_SubmittedDTO document_SubmittedDTO)
         {
-            var newCandidate = _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
+            var newCandidate = await  _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
             if(newCandidate == null)
             return NotFound("Candidate Not Found");
             
-            var newJob = _jobsSerivce.getJobById(document_SubmittedDTO.Job_id);
+            var newJob = await _jobsSerivce.getJobById(document_SubmittedDTO.Job_id);
             if(newJob == null)
             return NotFound("Job Not Found");
 
-            var newDocument_Type = _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newDocument_Type = await _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
 
-            var newUser = _userService.getUserById(document_SubmittedDTO.Approved_by);
+            var newUser = await _userService.getUserById(document_SubmittedDTO.Approved_by);
             if(newUser == null)
             return NotFound("User Not Found");
-
-            var response = _document_SubmittedService.saveDocument_Submitted(document_SubmittedDTO);
-            return Ok(response);
+            
+            try{
+                var response = await _document_SubmittedService.saveDocument_Submitted(document_SubmittedDTO);
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut("{Document_Submitted_id}")]
-        public ActionResult<Document_Submitted> updateDocument_Submitted(int Document_Submitted_id,Document_SubmittedDTO document_SubmittedDTO)
+        public async Task<ActionResult<Document_Submitted>> updateDocument_Submitted(int Document_Submitted_id,Document_SubmittedDTO document_SubmittedDTO)
         {
-            var newCandidate = _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
+            var newCandidate = await _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
             if(newCandidate == null)
             return NotFound("Candidate Not Found");
             
-            var newJob = _jobsSerivce.getJobById(document_SubmittedDTO.Job_id);
+            var newJob = await _jobsSerivce.getJobById(document_SubmittedDTO.Job_id);
             if(newJob == null)
             return NotFound("Job Not Found");
 
-            var newDocument_Type = _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newDocument_Type = await  _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
 
-            var newUser = _userService.getUserById(document_SubmittedDTO.Approved_by);
+            var newUser = await _userService.getUserById(document_SubmittedDTO.Approved_by);
             if(newUser == null)
             return NotFound("User Not Found");
 
-            var response = _document_SubmittedService.updateDocument_Submitted(Document_Submitted_id,document_SubmittedDTO);
-            if(response == null)
-            return NotFound("Submitted Document Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _document_SubmittedService.updateDocument_Submitted(Document_Submitted_id,document_SubmittedDTO);
+                if(response == null)
+                return NotFound("Submitted Document Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpDelete("{Document_Submitted_id}")]
-        public ActionResult<Document_Submitted> deleteDocument_Submitted(int Document_Submitted_id)
+        public async Task<ActionResult<Document_Submitted>> deleteDocument_Submitted(int Document_Submitted_id)
         {
-            var response = _document_SubmittedService.deleteDocument_Submitted(Document_Submitted_id);
-            if(response)
-            return Ok("Submitted Document Deleted Successfully");
-            else
-            return NotFound("Submitted Document Not Found");
+            try{
+                var response = await _document_SubmittedService.deleteDocument_Submitted(Document_Submitted_id);
+                if(response)
+                return Ok("Submitted Document Deleted Successfully");
+                else
+                return NotFound("Submitted Document Not Found");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
@@ -20,44 +21,74 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet("getAllUser")]
-        public ActionResult<IEnumerable<User>> GetAllUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUser()
         {
-            var users = _userService.getAllUser();
-            return Ok(users);
+            try{
+                var users = await _userService.getAllUser();
+                return Ok(users);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("getUserById/{userId}")]
-        public ActionResult<User> getUserById(int userId){
-            var user = _userService.getUserById(userId);
-            if(user == null)
-            return NotFound(null);
-            else
-            return Ok(user);
+        public async Task<ActionResult<User>> getUserById(int userId){
+            try{
+                var user = await _userService.getUserById(userId);
+                if(user == null)
+                return NotFound(null);
+                else
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("saveUser")]
-        public ActionResult<User> saveUser([FromBody] UserDTO userDTO)
+        public async Task<ActionResult<User>> saveUserAsync(UserDTO userDTO)
         {
-            var user1 = _userService.saveUser(userDTO);
-            return Ok(user1);
-        }
-
-        [HttpPut("updateUser/{userId}")]
-        public ActionResult<User> updateUser(int userId,UserDTO userDTO)
-        {
-            var user = _userService.updateUser(userId,userDTO);
-            return Ok(user);
+            try{
+                var user1 = await _userService.saveUser(userDTO);
+                return Ok(user1);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             
         }
 
-        [HttpDelete("deleteUser/{userId}")]
-        public ActionResult<User> deleteUser(int userId)
+        [HttpPut("updateUser/{userId}")]
+        public async Task<ActionResult<User>> updateUser(int userId,UserDTO userDTO)
         {
-            var response = _userService.deleteUser(userId);
-            if(response)
-            return Ok();
-            else
-            return NotFound();
+            try{
+                var user = await _userService.updateUser(userId,userDTO);
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("deleteUser/{userId}")]
+        public async Task<ActionResult<User>> deleteUser(int userId)
+        {
+            try{
+                var response = await _userService.deleteUser(userId);
+                if(response)
+                return Ok();
+                else
+                return NotFound();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

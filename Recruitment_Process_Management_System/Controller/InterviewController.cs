@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -21,71 +22,85 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Interview>> getAllInterview()
+        public async Task<ActionResult<IEnumerable<Interview>>> getAllInterview()
         {
-            var response = _interviewService.getAllInterview();
-            return Ok(response);
+            try{
+                var response = await _interviewService.getAllInterview();
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Interview_id}")]
-        public ActionResult<Interview> getInterviewById(int Interview_id)
+        public async Task<ActionResult<Interview>> getInterviewById(int Interview_id)
         {
-            var response = _interviewService.getInterviewById(Interview_id);
-            if(response == null)
-            return NotFound("Interview Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _interviewService.getInterviewById(Interview_id);
+                if(response == null)
+                return NotFound("Interview Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPost]
-        public ActionResult<Interview> saveInterview(InterviewDTO interviewDTO)
+        public async Task<ActionResult<Interview>> saveInterview(InterviewDTO interviewDTO)
         {
-            var candidate_Application_Status = _candidate_Application_StatusService.getCandidate_Application_StatusById(interviewDTO.Application_id);
-            if(candidate_Application_Status == null)
-            return NotFound("Candidate Application Not Found");
-
-            var interview_Type = _interview_TypeService.getInterview_TypeById(interviewDTO.Interview_Type_id);
-            if(interview_Type == null)
-            return NotFound("Interview Type Not Found");
-
-            var interview_Status = _interview_StatusService.getInterview_StatusById(interviewDTO.Interview_Status_id);
-            if(interview_Status == null)
-            return NotFound("Interview Status Not Found");
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+            try{
+                var response = await _interviewService.saveInterview(interviewDTO);
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             
-            var response = _interviewService.saveInterview(interviewDTO);
-            return Ok(response);
         }
 
         [HttpPut("{Interview_id}")]
-        public ActionResult<Interview> updatInterview(int Interview_id,InterviewDTO interviewDTO)
+        public async Task<ActionResult<Interview>> updatInterview(int Interview_id,InterviewDTO interviewDTO)
         {
-            var candidate_Application_Status = _candidate_Application_StatusService.getCandidate_Application_StatusById(interviewDTO.Application_id);
-            if(candidate_Application_Status == null)
-            return NotFound("Candidate Application Not Found");
-
-            var interview_Type = _interview_TypeService.getInterview_TypeById(interviewDTO.Interview_Type_id);
-            if(interview_Type == null)
-            return NotFound("Interview Type Not Found");
-
-            var interview_Status = _interview_StatusService.getInterview_StatusById(interviewDTO.Interview_Status_id);
-            if(interview_Status == null)
-            return NotFound("Interview Status Not Found");
-
-            var response = _interviewService.updateInterview(Interview_id,interviewDTO);
-            if(response == null)
-            return NotFound("Interview Not Found");
-            else
-            return Ok(response);
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+            try{
+                var response = await _interviewService.updateInterview(Interview_id,interviewDTO);
+                if(response == null)
+                return NotFound("Interview Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpDelete("{Interview_id}")]
-        public ActionResult<Interview> deleteInterview(int Interview_id)
+        public async Task<ActionResult<Interview>> deleteInterview(int Interview_id)
         {
-            var response = _interviewService.deleteInterview(Interview_id);
-            if(response)
-            return Ok("Interview Deleted Successfully");
-            else
-            return NotFound("Interview Not Found");
+            try{
+                var response = await _interviewService.deleteInterview(Interview_id);
+                if(response)
+                return Ok("Interview Deleted Successfully");
+                else
+                return NotFound("Interview Not Found");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

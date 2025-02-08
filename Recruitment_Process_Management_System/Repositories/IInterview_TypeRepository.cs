@@ -4,14 +4,14 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IInterview_TypeRepository
     {
-        IEnumerable<Interview_Type> getAllInterview_Type();
+        Task<IEnumerable<Interview_Type>> getAllInterview_Type();
 
-        Interview_Type getInterview_TypeById(int Interview_Type_id);
+        Task<Interview_Type> getInterview_TypeById(int Interview_Type_id);
 
-        Interview_Type saveInterview_Type(Interview_Type interview_Type);
+        Task<Interview_Type> saveInterview_Type(Interview_Type interview_Type);
 
-        Interview_Type updateInterview_Type(int Interview_Type_id,Interview_Type interview_Type);
+        Task<Interview_Type> updateInterview_Type(Interview_Type interview_Type);
 
-        bool deleteInterview_Type(int Interview_Type_id);
+        Task<bool> deleteInterview_Type(Interview_Type interview_Type);
     }
 }

@@ -16,50 +16,79 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserRoles>> getAllUserRole()
+        public async Task<ActionResult<IEnumerable<UserRoles>>> getAllUserRole()
         {
-            var userRoles = _userRolesService.getAllUserRoles();
-            return Ok(userRoles);
+            try{
+                var userRoles = await _userRolesService.getAllUserRoles();
+                return Ok(userRoles);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{UserRolesId}")]
-        public ActionResult<UserRoles> getUserRoleById(int UserRolesId)
+        public async Task<ActionResult<UserRoles>> getUserRoleById(int UserRolesId)
         {
-            var response = _userRolesService.getUserRolesById(UserRolesId);
-            if(response == null)
-            return NotFound("UserRole Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _userRolesService.getUserRolesById(UserRolesId);
+                if(response == null)
+                return NotFound("UserRole Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult<UserRoles> saveUserRole(UserRolesDTO userRolesDTO)
+        public async Task<ActionResult<UserRoles>> saveUserRole(UserRolesDTO userRolesDTO)
         {
-            var response = _userRolesService.saveUserRoles(userRolesDTO);
-            if(response == null)
-            return NotFound("User or Role Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _userRolesService.saveUserRoles(userRolesDTO);
+                if(response == null)
+                return NotFound("User or Role Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{UserRolesId}")]
-        public ActionResult<UserRoles> updateUserRole(int UserRolesId,UserRolesDTO userRolesDTO)
+        public async Task<ActionResult<UserRoles>> updateUserRole(int UserRolesId,UserRolesDTO userRolesDTO)
         {
-            var response = _userRolesService.updateUserRoles(UserRolesId,userRolesDTO);
-            if(response == null)
-            return NotFound("User or Role Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _userRolesService.updateUserRoles(UserRolesId,userRolesDTO);
+                if(response == null)
+                return NotFound("User or Role Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{UserRolesId}")]
-        public ActionResult<bool> deleteUserRole(int UserRolesId)
+        public async Task<ActionResult<bool>> deleteUserRole(int UserRolesId)
         {
-            var response = _userRolesService.deleteUserRoles(UserRolesId);
-            if(response)
-            return Ok("UserRole Deleted Successfully");
-            else
-            return NotFound("UserRole Not Found");
+            try{
+                var response = await _userRolesService.deleteUserRoles(UserRolesId);
+                if(response)
+                return Ok("UserRole Deleted Successfully");
+                else
+                return NotFound("UserRole Not Found");
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

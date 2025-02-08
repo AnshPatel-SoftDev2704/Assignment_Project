@@ -3,10 +3,10 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IJobsRepository
     {
-        IEnumerable<Jobs> getAllJobs();
-        Jobs getJobById(int Job_id);
-        Jobs saveJob(JobsDTO jobsDTO);
-        Jobs updateJob(int Job_id,JobsDTO jobsDTO);
-        bool deleteJob(int Job_id);
+        Task<IEnumerable<Jobs>> getAllJobs();
+        Task<Jobs> getJobById(int Job_id);
+        Task<Jobs> saveJob(Jobs jobs);
+        Task<Jobs> updateJob(Jobs jobs);
+        Task<bool> deleteJob(Jobs jobs);
     }
 }
