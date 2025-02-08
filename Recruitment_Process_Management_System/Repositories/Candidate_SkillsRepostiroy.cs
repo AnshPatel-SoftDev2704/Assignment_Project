@@ -2,6 +2,7 @@ using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Threading.Tasks;
 
 namespace Recruitment_Process_Management_System.Repositories
 {
@@ -14,80 +15,41 @@ namespace Recruitment_Process_Management_System.Repositories
             _context = context;
         }
 
-        public bool deleteCandidate_Skill(int Candidate_Skills_id)
+        public async Task<bool> deleteCandidate_Skill(Candidate_Skills candidate_Skills)
         {
-            var candidateSkill = _context.Candidate_Skills.FirstOrDefault(cs => cs.Candidate_Skill_id == Candidate_Skills_id);
-            if(candidateSkill == null)
-            return false;
-
-            _context.Candidate_Skills.Remove(candidateSkill);
+            _context.Candidate_Skills.Remove(candidate_Skills);
             _context.SaveChanges();
             return true;
         }
 
-        public Candidate_Skills getAllCandidate_SkillById(int Candidate_Skills_id)
+        public async Task<Candidate_Skills> getAllCandidate_SkillById(int Candidate_Skills_id)
         {
            var candidateSkill = _context.Candidate_Skills.Include(c=> c.candidate_Details).Include(s => s.skill).Include(c => c.candidate_Details.role).FirstOrDefault(cs => cs.Candidate_Skill_id == Candidate_Skills_id);
            return candidateSkill;
         }
 
-        public IEnumerable<Candidate_Skills> getAllCandidate_Skills()
+        public async Task<IEnumerable<Candidate_Skills>> getAllCandidate_Skills()
         {
             var candidateSkills = _context.Candidate_Skills.Include(c => c.candidate_Details).Include(s => s.skill).Include(c => c.candidate_Details.role).ToList();
             return candidateSkills;
         }
 
-        public Candidate_Skills saveCandidate_Skill(Candidate_SkillsDTO candidate_SkillsDTO)
+        public async Task<Candidate_Skills> saveCandidate_Skill(Candidate_Skills candidate_Skills )
         {
-            var candidateSkill = _context.Candidate_Skills.FirstOrDefault(c => c.Skill_id == candidate_SkillsDTO.Skill_id);
+            var candidateSkill = _context.Candidate_Skills.FirstOrDefault(c => c.Skill_id == candidate_Skills.Skill_id);
             if(candidateSkill != null)
-            return null;
-            
-            var candidate = _context.Candidate_Details.FirstOrDefault(cd => cd.Candidate_id == candidate_SkillsDTO.Candidate_id);
-            if(candidate == null)
-            return null;
-
-            var newSkill = _context.Skills.FirstOrDefault(s => s.Skill_id == candidate_SkillsDTO.Skill_id);
-            if(newSkill == null)
-            return null;
-
-            Candidate_Skills candidate_Skills = new Candidate_Skills{
-                Candidate_id = candidate_SkillsDTO.Candidate_id,
-                candidate_Details = candidate,
-                Skill_id = candidate_SkillsDTO.Skill_id,
-                skill = newSkill,
-                Total_Skill_Work_experience = candidate_SkillsDTO.Total_Skill_Work_experience,
-                Created_at = DateTime.Now,
-                Updated_at = DateTime.Now
-            };
+            throw new Exception("Skill is Already added");
 
             _context.Candidate_Skills.Add(candidate_Skills);
             _context.SaveChanges();
             return candidate_Skills;
         }
 
-        public Candidate_Skills updateCandidate_Skill(int Candidate_Skills_id, Candidate_SkillsDTO candidate_SkillsDTO)
+        public async Task<Candidate_Skills> updateCandidate_Skill(Candidate_Skills candidate_Skills)
         {
-           var candidateSkill = _context.Candidate_Skills.FirstOrDefault(c => c.Candidate_Skill_id == Candidate_Skills_id);
-            if(candidateSkill == null)
-            return null;
-            
-            var candidate = _context.Candidate_Details.FirstOrDefault(cd => cd.Candidate_id == candidate_SkillsDTO.Candidate_id);
-            if(candidate == null)
-            return null;
-
-            var newSkill = _context.Skills.FirstOrDefault(s => s.Skill_id == candidate_SkillsDTO.Skill_id);
-            if(newSkill == null)
-            return null;
-
-            candidateSkill.Candidate_id = candidate_SkillsDTO.Candidate_id;
-            candidateSkill.candidate_Details = candidate;
-            candidateSkill.Skill_id = candidate_SkillsDTO.Skill_id;
-            candidateSkill.skill = newSkill;
-            candidateSkill.Total_Skill_Work_experience = candidate_SkillsDTO.Total_Skill_Work_experience;
-            candidateSkill.Updated_at = DateTime.Now;
+            _context.Candidate_Skills.Update(candidate_Skills);
             _context.SaveChanges();
-            return candidateSkill;
+            return candidate_Skills;
         }
     }
 }

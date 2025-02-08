@@ -5,14 +5,14 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IInterviewRepository
     {
-        IEnumerable<Interview> getAllInterview();
+        Task<IEnumerable<Interview>> getAllInterview();
 
-        Interview getInterviewById(int Interview_id);
+        Task<Interview> getInterviewById(int Interview_id);
 
-        Interview saveInterview(InterviewDTO interviewDTO);
+        Task<Interview> saveInterview(Interview interview);
 
-        Interview updateInterview(int Interview_id,InterviewDTO interviewDTO);
+        Task<Interview> updateInterview(Interview interview);
 
-        bool deleteInterview(int Interview_id);
+        Task<bool> deleteInterview(Interview interview);
     }
 }

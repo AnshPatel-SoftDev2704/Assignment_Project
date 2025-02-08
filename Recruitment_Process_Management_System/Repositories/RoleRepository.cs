@@ -10,46 +10,36 @@ namespace Recruitment_Process_Management_System.Repositories
         {
             _context = context;
         }
-        public bool deleteRole(int Role_id)
+        public async Task<bool> deleteRole(Role role)
         {
-            var role = _context.Roles.FirstOrDefault(r => r.Role_id == Role_id);
-            if(role == null)
-            return false;
             _context.Roles.Remove(role);
             _context.SaveChanges();
             return true;
         }
 
-        public IEnumerable<Role> getAllRole()
+        public async Task<IEnumerable<Role>> getAllRole()
         {
             var roles = _context.Roles.ToList();
             return roles;
         }
 
-        public Role getRoleById(int Role_id)
+        public async Task<Role> getRoleById(int Role_id)
         {
             var role = _context.Roles.FirstOrDefault(r => r.Role_id == Role_id);
             return role;
         }
 
-        public Role saveRole(Role role)
+        public async Task<Role> saveRole(Role role)
         {
             var isRoleExist = _context.Roles.FirstOrDefault(r => r.Role_Name == role.Role_Name);
             if(isRoleExist != null)
             return null;
-
-            Role newRole = new Role{
-                Role_Name = role.Role_Name,
-                Role_Description = role.Role_Description,
-                Created_at = DateTime.Now,
-                Updated_at = DateTime.Now
-            };
-            _context.Roles.Add(newRole);
+            _context.Roles.Add(role);
             _context.SaveChanges();
-            return newRole;
+            return role;
         }
 
-        public Role updateRole(int Role_id, Role role)
+        public async Task<Role> updateRole(int Role_id, Role role)
         {
             var existingRole = _context.Roles.FirstOrDefault(r => r.Role_Name == role.Role_Name);
             if(existingRole == null)

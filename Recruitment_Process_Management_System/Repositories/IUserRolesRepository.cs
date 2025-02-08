@@ -4,11 +4,11 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IUserRolesRepository
     {
-        IEnumerable<UserRoles> getAllUserRoles();
+        Task<IEnumerable<UserRoles>> getAllUserRoles();
 
-        UserRoles getUserRolesById(int UserRolesId);
-        UserRoles saveUserRoles(UserRolesDTO userRolesDTO);
-        UserRoles updateUserRoles(int UserRolesId,UserRolesDTO userRolesDTO);
-        bool deleteUserRoles(int UserRolesId);
+        Task<UserRoles> getUserRolesById(int UserRolesId);
+        Task<UserRoles> saveUserRoles(UserRoles userRole);
+        Task<UserRoles> updateUserRoles(UserRoles userRole);
+        Task<bool> deleteUserRoles(UserRoles userRole);
     }
 }

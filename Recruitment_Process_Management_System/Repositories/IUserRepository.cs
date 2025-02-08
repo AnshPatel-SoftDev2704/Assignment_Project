@@ -3,12 +3,12 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IUserRepository
     {
-        IEnumerable<User> getAllUser();
+        Task<IEnumerable<User>> getAllUser();
 
-        User getUserById(int userId);
-        User saveUser(UserDTO userDTO);
-        User updateUser(int userId,UserDTO userDTO);
-        bool deleteUser(int userId);
-        string GetPassword(string name);
+        Task<User> getUserById(int userId);
+        Task<User> saveUser(UserDTO userDTO);
+        Task<User> updateUser(User user,string type);
+        Task<bool> deleteUser(User user);
+        Task<string> GetPassword(string name);
     }
 }

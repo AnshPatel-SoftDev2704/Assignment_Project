@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Repositories;
@@ -21,34 +22,34 @@ namespace Recruitment_Process_Management_System.Services
             _userRepository = userRepository;
         }
 
-        public bool deleteDocument_Submitted(int Document_Submitted_id)
+        public async Task<bool> deleteDocument_Submitted(int Document_Submitted_id)
         {
-            var response = _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
+            var response = await _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
             if(response == null)
             return false;
 
-            _document_SubmittedRepository.deleteDocument_Submitted(response);
+            await _document_SubmittedRepository.deleteDocument_Submitted(response);
             return true;
         }
 
-        public IEnumerable<Document_Submitted> getAllDocument_Submitted()
+        public async Task<IEnumerable<Document_Submitted>> getAllDocument_Submitted()
         {
-            var responses = _document_SubmittedRepository.getAllDocument_Submitted();
+            var responses = await _document_SubmittedRepository.getAllDocument_Submitted();
             return responses;
         }
 
-        public Document_Submitted getDocument_SubmittedById(int Document_Submitted_id)
+        public async Task<Document_Submitted> getDocument_SubmittedById(int Document_Submitted_id)
         {
-            var response = _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
+            var response = await _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
             return response;
         }
 
-        public Document_Submitted saveDocument_Submitted(Document_SubmittedDTO document_SubmittedDTO)
+        public async Task<Document_Submitted> saveDocument_Submitted(Document_SubmittedDTO document_SubmittedDTO)
         {
-            var newCandidate = _candidate_DetailsRepository.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
-            var newDocument_type = _document_TypeRepository.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
-            var newJob = _jobsRepository.getJobById(document_SubmittedDTO.Job_id);
-            var newUser = _userRepository.getUserById(document_SubmittedDTO.Approved_by);
+            var newCandidate = await _candidate_DetailsRepository.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
+            var newDocument_type = await _document_TypeRepository.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newJob = await _jobsRepository.getJobById(document_SubmittedDTO.Job_id);
+            var newUser = await _userRepository.getUserById(document_SubmittedDTO.Approved_by);
 
             Document_Submitted document_Submitted = new Document_Submitted{
                 Candidate_id = document_SubmittedDTO.Candidate_id,
@@ -71,15 +72,15 @@ namespace Recruitment_Process_Management_System.Services
             return document_Submitted;
         }
 
-        public Document_Submitted updateDocument_Submitted(int Document_Submitted_id, Document_SubmittedDTO document_SubmittedDTO)
+        public async Task<Document_Submitted> updateDocument_Submitted(int Document_Submitted_id, Document_SubmittedDTO document_SubmittedDTO)
         {
-            var newCandidate = _candidate_DetailsRepository.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
-            var newDocument_type = _document_TypeRepository.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
-            var newJob = _jobsRepository.getJobById(document_SubmittedDTO.Job_id);
-            var newUser = _userRepository.getUserById(document_SubmittedDTO.Approved_by);
-            var existingDocument_Submitted = _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
+            var newCandidate = await _candidate_DetailsRepository.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
+            var newDocument_type = await _document_TypeRepository.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newJob = await _jobsRepository.getJobById(document_SubmittedDTO.Job_id);
+            var newUser = await _userRepository.getUserById(document_SubmittedDTO.Approved_by);
+            var existingDocument_Submitted = await _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
             if(existingDocument_Submitted == null)
-            return null;
+            throw new Exception("This document is already submitted by the Candidate");
 
             existingDocument_Submitted.Candidate_id = document_SubmittedDTO.Candidate_id;
             existingDocument_Submitted.candidate = newCandidate;
@@ -95,8 +96,7 @@ namespace Recruitment_Process_Management_System.Services
             existingDocument_Submitted.Approved_date = document_SubmittedDTO.Approved_date;
             existingDocument_Submitted.Updated_at = DateTime.Now;
 
-            _document_SubmittedRepository.updateDocument_Submitted(existingDocument_Submitted);
-            return existingDocument_Submitted;
+            return await _document_SubmittedRepository.updateDocument_Submitted(existingDocument_Submitted);
         }
     }
 }

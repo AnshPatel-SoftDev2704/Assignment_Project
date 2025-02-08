@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
@@ -18,50 +19,81 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Skill>> getAllSkill()
+        public async Task<ActionResult<IEnumerable<Skill>>> getAllSkill()
         {
-            var skills = _skillService.getAllSkill();
-            return Ok(skills);
+            try{
+                var skills = await _skillService.getAllSkill();
+                return Ok(skills);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Skill_id}")]
-        public ActionResult<Skill> getSkillById(int Skill_id)
+        public async Task<ActionResult<Skill>> getSkillById(int Skill_id)
         {
-            var skill = _skillService.getSkillById(Skill_id);
-            if(skill == null)
-            return NotFound(null);
-            else
-            return Ok(skill);
+            try{
+                var skill = await _skillService.getSkillById(Skill_id);
+                if(skill == null)
+                return NotFound(null);
+                else
+                return Ok(skill);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public ActionResult<Skill> saveSkill(Skill skill)
+        public async Task<ActionResult<Skill>> saveSkill(Skill skill)
         {
-            var response = _skillService.saveSkill(skill);
-            if(response == null)
-            return BadRequest(null);
-            else
-            return Ok(response);
+            try{
+                var response = await _skillService.saveSkill(skill);
+                if(response == null)
+                return BadRequest(null);
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpPut("{Skill_id}")]
-        public ActionResult<Skill> updateSkill(int Skill_id,Skill skill)
+        public async Task<ActionResult<Skill>> updateSkill(int Skill_id,Skill skill)
         {
-            var response = _skillService.updateSkill(Skill_id,skill);
-            if(response == null)
-            return NotFound(null);
-            else
-            return Ok(response);
+            try{
+                var response = await _skillService.updateSkill(Skill_id,skill);
+                if(response == null)
+                return NotFound(null);
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{Skill_id}")]
-        public ActionResult<bool> deleteSkill(int Skill_id)
+        public async Task<ActionResult<bool>> deleteSkill(int Skill_id)
         {
-            var response = _skillService.deleteSkill(Skill_id);
-            if(response)
-            return Ok();
-            else
-            return NotFound();
+            try{
+                var response = await _skillService.deleteSkill(Skill_id);
+                if(response)
+                return Ok();
+                else
+                return NotFound();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

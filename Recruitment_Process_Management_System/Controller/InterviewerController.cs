@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -20,63 +21,83 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Interviewer>> getAllInterviewer()
+        public async Task<ActionResult<IEnumerable<Interviewer>>> getAllInterviewer()
         {
-            var responses = _interviewerService.getAllInterviewer();
-            return Ok(responses);
+            try{
+                var responses = await _interviewerService.getAllInterviewer();
+                return Ok(responses);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{Interviewer_id}")]
-        public ActionResult<Interviewer> getInterviewerById(int Interviewer_id)
+        public async Task<ActionResult<Interviewer>> getInterviewerById(int Interviewer_id)
         {
-            var response = _interviewerService.getInterviewerById(Interviewer_id);
-            if(response == null)
-            return NotFound("Interviewer Not Found");
-            else
-            return Ok(response);
+            try{
+                var response = await _interviewerService.getInterviewerById(Interviewer_id);
+                if(response == null)
+                return NotFound("Interviewer Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
         
         [HttpPost]
-        public ActionResult<Interviewer> saveInterviewer(InterviewerDTO interviewerDTO)
+        public async Task<ActionResult<Interviewer>> saveInterviewer(InterviewerDTO interviewerDTO)
         {
-            var interview = _interviewService.getInterviewById(interviewerDTO.Interview_id);
-            if(interview == null)
-            return NotFound("Interview Not Found");
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+             try{
+                var response = await _interviewerService.saveInterviewer(interviewerDTO);
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             
-            var user = _userService.getUserById(interviewerDTO.User_id);
-            if(user == null)
-            return NotFound("User Not Found");
-
-            var response = _interviewerService.saveInterviewer(interviewerDTO);
-            return Ok(response);
         }
 
         [HttpPut("{Interviewer_id}")]
-        public ActionResult<Interviewer> updateInterviewer(int Interviewer_id,InterviewerDTO interviewerDTO)
+        public async Task<ActionResult<Interviewer>> updateInterviewer(int Interviewer_id,InterviewerDTO interviewerDTO)
         {
-            var interview = _interviewService.getInterviewById(interviewerDTO.Interview_id);
-            if(interview == null)
-            return NotFound("Interview Not Found");
-            
-            var user = _userService.getUserById(interviewerDTO.User_id);
-            if(user == null)
-            return NotFound("User Not Found");
-
-            var interviewer = _interviewerService.updateInterviewer(Interviewer_id,interviewerDTO);
-            if(interviewer == null)
-            return NotFound("Interviewer Not Found");
-            else
-            return Ok(interviewer);
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+            try{
+                var interviewer = await _interviewerService.updateInterviewer(Interviewer_id,interviewerDTO);
+                if(interviewer == null)
+                return NotFound("Interviewer Not Found");
+                else
+                return Ok(interviewer);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{Interviewer_id}")]
-        public ActionResult<bool> deleteInterviewer(int Interviewer_id)
+        public async Task<ActionResult<bool>> deleteInterviewer(int Interviewer_id)
         {
-            var response = _interviewerService.deleteInterviewer(Interviewer_id);
-            if(response)
-            return Ok("Interviewer Deleted Successfully");
-            else
-            return NotFound("Interviewer Not Found");
+            try{
+                var response = await _interviewerService.deleteInterviewer(Interviewer_id);
+                if(response)
+                return Ok("Interviewer Deleted Successfully");
+                else
+                return NotFound("Interviewer Not Found");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -4,10 +4,10 @@ namespace Recruitment_Process_Management_System.Services
 {
     public interface IUserService
     {
-        IEnumerable<User> getAllUser();
-        User getUserById(int userId);
-        User saveUser(UserDTO useDTO);
-        User updateUser(int userId,UserDTO userDTO);
-        bool deleteUser(int userId);
+        Task<IEnumerable<User>> getAllUser();
+        Task<User> getUserById(int userId);
+        Task<User> saveUser(UserDTO useDTO);
+        Task<User> updateUser(int userId,UserDTO userDTO);
+        Task<bool> deleteUser(int userId);
     }
 }

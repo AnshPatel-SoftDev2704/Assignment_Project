@@ -13,60 +13,67 @@ namespace Recruitment_Process_Management_System.Repositories
             _context = context;
         }
 
-        public bool deleteUserRoles(int UserRolesId)
+        public async Task<bool> deleteUserRoles(UserRoles userRole)
         {
-            var userRole = _context.UserRoles.FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
-            if(userRole == null)
-            return false;
-
-            _context.UserRoles.Remove(userRole);
-            _context.SaveChanges();
-            return true;
+            try{
+                _context.UserRoles.Remove(userRole);
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
 
-        public IEnumerable<UserRoles> getAllUserRoles()
+        public async Task<IEnumerable<UserRoles>> getAllUserRoles()
         {
-            var userRoles = _context.UserRoles.Include(u => u.user).Include(r=>r.role).ToList();
-            return userRoles;
+            try{
+                var userRoles = _context.UserRoles.Include(u => u.user).Include(r=>r.role).ToList();
+                return userRoles;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            } 
         }
 
-        public UserRoles getUserRolesById(int UserRolesId)
+        public async Task<UserRoles> getUserRolesById(int UserRolesId)
         {
-            var userRole = _context.UserRoles.Include(u => u.user).Include(r=>r.role).FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
-            return userRole;
+            try{
+                var userRole = _context.UserRoles.Include(u => u.user).Include(r=>r.role).FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
+                return userRole;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }    
         }
 
-        public UserRoles saveUserRoles(UserRolesDTO userRolesDTO)
+        public async Task<UserRoles> saveUserRoles(UserRoles userRole)
         {
-            var responseUser = _context.Users.FirstOrDefault(u => u.User_id == userRolesDTO.User_id);
-            var responseRole = _context.Roles.FirstOrDefault(r => r.Role_id == userRolesDTO.Role_id);
-
-            UserRoles userRole = new UserRoles{
-                User_id = userRolesDTO.User_id,
-                user = responseUser,
-                Role_id = userRolesDTO.Role_id,
-                role = responseRole,
-                Created_at = DateTime.Now,
-                Updated_at = DateTime.Now
-            };
-            _context.UserRoles.Add(userRole);
-            _context.SaveChanges();
-            return userRole;
+            try{
+                _context.UserRoles.Add(userRole);
+                _context.SaveChanges();
+                return userRole;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }      
         }
 
-        public UserRoles updateUserRoles(int UserRolesId, UserRolesDTO userRolesDTO)
+        public async Task<UserRoles> updateUserRoles(UserRoles userRole)
         {
-            var existingUserRole = _context.UserRoles.FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
-            if(existingUserRole == null)
-            return null;
-            var responseUser = _context.Users.FirstOrDefault(u => u.User_id == userRolesDTO.User_id);
-            var responseRole = _context.Roles.FirstOrDefault(r => r.Role_id == userRolesDTO.Role_id);
-            existingUserRole.User_id = userRolesDTO.User_id;
-            existingUserRole.user = responseUser;
-            existingUserRole.Role_id = userRolesDTO.Role_id;
-            existingUserRole.role = responseRole;
-            existingUserRole.Updated_at = DateTime.Now;
-            return existingUserRole;
+            try{
+                _context.UserRoles.Update(userRole);
+                _context.SaveChanges();
+                return userRole;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

@@ -4,14 +4,14 @@ namespace Recruitment_Process_Management_System.Repositories
 {
     public interface IInterview_StatusRepository
     {
-        IEnumerable<Interview_Status> getAllInterview_Status();
+        Task<IEnumerable<Interview_Status>> getAllInterview_Status();
 
-        Interview_Status getInterview_StatusById(int Interview_Status_id);
+        Task<Interview_Status> getInterview_StatusById(int Interview_Status_id);
 
-        Interview_Status saveInterview_Status(Interview_Status interview_Status);
+        Task<Interview_Status> saveInterview_Status(Interview_Status interview_Status);
 
-        Interview_Status updateInterview_Status(int Interview_Status_id,Interview_Status interview_Status);
+        Task<Interview_Status> updateInterview_Status(Interview_Status interview_Status);
 
-        bool deleteInterview_Status(int Interview_Status_id);
+        Task<bool> deleteInterview_Status(Interview_Status interview_Status);
     }
 }

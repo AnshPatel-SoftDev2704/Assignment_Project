@@ -4,14 +4,14 @@ namespace Recruitment_Process_Management_System.Services
 {
     public interface IInterviewerService
     {
-        IEnumerable<Interviewer> getAllInterviewer();
+        Task<IEnumerable<Interviewer>> getAllInterviewer();
 
-        Interviewer getInterviewerById(int Interviewer_id);
+        Task<Interviewer> getInterviewerById(int Interviewer_id);
 
-        Interviewer saveInterviewer(InterviewerDTO interviewerDTO);
+        Task<Interviewer> saveInterviewer(InterviewerDTO interviewerDTO);
 
-        Interviewer updateInterviewer(int Interviewer_id,InterviewerDTO interviewerDTO);
+        Task<Interviewer> updateInterviewer(int Interviewer_id,InterviewerDTO interviewerDTO);
 
-        bool deleteInterviewer(int Interviewer_id);
+        Task<bool> deleteInterviewer(int Interviewer_id);
     }
 }

@@ -15,7 +15,8 @@ namespace Recruitment_Process_Management_System.Services
         public string Authenticate(string Name,string Password)
         {
             var response = _userRepository.GetPassword(Name);
-            if(Password == response)
+            var password = response.ToString();
+            if(Password == password)
             {
                 return GenerateJwtToken(Name,Password,"admin");
             }

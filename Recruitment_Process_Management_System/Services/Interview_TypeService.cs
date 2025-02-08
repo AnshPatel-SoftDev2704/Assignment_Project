@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Repositories;
 
@@ -12,14 +13,29 @@ namespace Recruitment_Process_Management_System.Services
             _interview_TyperRepository = interview_TyperRepository;
         }
 
-        public bool deleteInterview_Type(int Interview_Type_id) => _interview_TyperRepository.deleteInterview_Type(Interview_Type_id);
+        public async Task<bool> deleteInterview_Type(int Interview_Type_id) {
+             var response = await _interview_TyperRepository.getInterview_TypeById(Interview_Type_id);
+            if(response == null)
+            return false;
+           return await _interview_TyperRepository.deleteInterview_Type(response);
+        }
 
-        public IEnumerable<Interview_Type> getAllInterview_Type() => _interview_TyperRepository.getAllInterview_Type();
+        public async Task<IEnumerable<Interview_Type>> getAllInterview_Type() => await _interview_TyperRepository.getAllInterview_Type();
 
-        public Interview_Type getInterview_TypeById(int Interview_Type_id) => _interview_TyperRepository.getInterview_TypeById(Interview_Type_id);
+        public async Task<Interview_Type> getInterview_TypeById(int Interview_Type_id) => await _interview_TyperRepository.getInterview_TypeById(Interview_Type_id);
 
-        public Interview_Type saveInterview_Type(Interview_Type interview_Type) => _interview_TyperRepository.saveInterview_Type(interview_Type);
+        public async Task<Interview_Type> saveInterview_Type(Interview_Type interview_Type) {
+           return await _interview_TyperRepository.saveInterview_Type(interview_Type);
+        }
+        public async Task<Interview_Type> updateInterview_Type(int Interview_Type_id,Interview_Type interview_Type) {
+            var response = await _interview_TyperRepository.getInterview_TypeById(Interview_Type_id);
+            if(response == null)
+            throw new Exception("Interview Type Not Found");
 
-        public Interview_Type updateInterview_Type(int Interview_Type_id, Interview_Type interview_Type) => _interview_TyperRepository.updateInterview_Type(Interview_Type_id,interview_Type);
+            response.Interview_Type_name = interview_Type.Interview_Type_name;
+            response.Interview_Type_description = interview_Type.Interview_Type_description;
+            response.Updated_at = DateTime.Now;
+            return await _interview_TyperRepository.updateInterview_Type(response);
+        }
     }
 }

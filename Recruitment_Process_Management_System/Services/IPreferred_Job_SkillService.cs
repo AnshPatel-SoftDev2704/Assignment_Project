@@ -3,10 +3,10 @@ namespace Recruitment_Process_Management_System.Services
 {
     public interface IPreferred_Job_SkillService
     {
-        IEnumerable<Preferred_Job_Skill> getAllPreferred_Job_Skill();
-        Preferred_Job_Skill getPreferred_Job_SkillById(int Preferred_Job_Skill_id);
-        Preferred_Job_Skill savePreferred_Job_Skill(Preferred_Job_SkillDTO preferred_Job_SkillDTO);
-        Preferred_Job_Skill updatePreferred_Job_Skill(int Preferred_Job_Skill_id,Preferred_Job_SkillDTO preferred_Job_SkillDTO);
-        bool deletePreferred_Job_Skill(int Preferred_Job_Skill_id);
+        Task<IEnumerable<Preferred_Job_Skill>> getAllPreferred_Job_Skill();
+        Task<Preferred_Job_Skill> getPreferred_Job_SkillById(int Preferred_Job_Skill_id);
+        Task<Preferred_Job_Skill> savePreferred_Job_Skill(Preferred_Job_SkillDTO preferred_Job_SkillDTO);
+        Task<Preferred_Job_Skill> updatePreferred_Job_Skill(int Preferred_Job_Skill_id,Preferred_Job_SkillDTO preferred_Job_SkillDTO);
+        Task<bool> deletePreferred_Job_Skill(int Preferred_Job_Skill_id);
     }
 }

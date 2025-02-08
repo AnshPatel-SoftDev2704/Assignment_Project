@@ -3,10 +3,10 @@ namespace Recruitment_Process_Management_System.Services
 {
     public interface ISkillService
     {
-        IEnumerable<Skill> getAllSkill();
-        Skill getSkillById(int Skill_id);
-        Skill saveSkill(Skill skill);
-        Skill updateSkill(int Skill_id,Skill skill);
-        bool deleteSkill(int Skill_id);
+        Task<IEnumerable<Skill>> getAllSkill();
+        Task<Skill> getSkillById(int Skill_id);
+        Task<Skill> saveSkill(Skill skill);
+        Task<Skill> updateSkill(int Skill_id,Skill skill);
+        Task<bool> deleteSkill(int Skill_id);
     }
 }
