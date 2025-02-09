@@ -57,6 +57,8 @@ builder.Services.AddScoped<IFeedbackService,FeedbackService>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<ISelected_CandidateService,Selected_CandidateService>();
 builder.Services.AddScoped<ISelected_CandidateRepository, Selected_CandidateRepository>();
+builder.Services.AddScoped<INotifications_UsersService,Notifications_UserService>();
+builder.Services.AddScoped<INotifications_UsersRepository, Notifications_UsersRepository>();
 builder.Services.AddScoped<AuthService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
