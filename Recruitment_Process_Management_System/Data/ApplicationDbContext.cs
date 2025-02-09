@@ -29,6 +29,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<Feedback> Feedback{get;set;}
         public DbSet<Selected_Candidate> Selected_Candidates{get;set;}
         public DbSet<Notifications_Users> Notifications_Users{get;set;}
+        public DbSet<Notifications_Candidate> Notifications_Candidates{get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

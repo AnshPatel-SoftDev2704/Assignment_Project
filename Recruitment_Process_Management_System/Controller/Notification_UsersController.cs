@@ -17,7 +17,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Notifications_Users>> getAllUserNotification()
+        public async Task<ActionResult<IEnumerable<Notifications_Users>>> getAllUserNotification()
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest("Something Went Wrong");
                 else
                 return Ok(response);
-            }
+            }   
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
