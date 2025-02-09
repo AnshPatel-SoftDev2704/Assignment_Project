@@ -53,6 +53,8 @@ builder.Services.AddScoped<IDocument_TypeService,Document_TypeService>();
 builder.Services.AddScoped<IDocument_TypeRepository, Document_TypeRespository>();
 builder.Services.AddScoped<IDocument_SubmittedService,Document_SubmittedService>();
 builder.Services.AddScoped<IDocument_SubmittedRepository, Document_SubmittedRepository>();
+builder.Services.AddScoped<IFeedbackService,FeedbackService>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<AuthService>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
