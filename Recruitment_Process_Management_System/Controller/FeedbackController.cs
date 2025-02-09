@@ -89,7 +89,7 @@ namespace Recruitment_Process_Management_System.Controllers
         {
             try{
                 var response = await _feedbackService.deleteFeedback(Feedback_id);
-                if(response)
+                if(!response)
                 return NotFound("Something Went wrong");
                 else
                 return Ok("Feedback Deleted Successfully");
