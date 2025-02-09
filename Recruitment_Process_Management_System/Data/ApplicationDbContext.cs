@@ -26,6 +26,7 @@ namespace Recruitment_Process_Management_System.data
         public DbSet<Interviewer> Interviewer{get;set;}
         public DbSet<Document_Type> Document_Type{get;set;}
         public DbSet<Document_Submitted> Document_Submitted{get;set;}
+        public DbSet<Feedback> Feedback{get;set;}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
