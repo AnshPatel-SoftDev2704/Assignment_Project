@@ -13,5 +13,9 @@ namespace Recruitment_Process_Management_System.Services
         Task<Interviewer> updateInterviewer(int Interviewer_id,InterviewerDTO interviewerDTO);
 
         Task<bool> deleteInterviewer(int Interviewer_id);
+
+        Task sendNotification(Interviewer interviewer,string Action);
+
+        Task interviewUpdated(Interview interview,string Action);
     }
 }

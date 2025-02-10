@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Recruitment_Process_Management_System.Controllers;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Repositories;
 
@@ -11,18 +12,21 @@ namespace Recruitment_Process_Management_System.Services
         private readonly IInterview_TypeRepository _interview_TypeRepository;
         private readonly IInterview_StatusRepository _interview_StatusRepository;
         private readonly INotification_CandidateService _notification_CandidateService;
+        private readonly IInterviewerService _interviewerService;
 
         public InterviewService(IInterviewRepository interviewRepository,
         ICandidate_Application_StatusRepository candidate_Application_StatusRepository,
         IInterview_StatusRepository interview_StatusRepository,
         IInterview_TypeRepository interview_TypeRepository,
-        INotification_CandidateService notification_CandidateService)
+        INotification_CandidateService notification_CandidateService,
+        IInterviewerService interviewerService)
         {
             _interviewRepository = interviewRepository;
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
             _interview_StatusRepository = interview_StatusRepository;
             _interview_TypeRepository = interview_TypeRepository;
             _notification_CandidateService = notification_CandidateService;
+            _interviewerService = interviewerService;
         }
 
         public async Task<bool> deleteInterview(int Interview_id) {
@@ -99,6 +103,7 @@ namespace Recruitment_Process_Management_System.Services
             if(!(existingInterview.Scheduled_at != interviewDTO.Scheduled_at))
             {
                 await sendNotification(existingInterview,"Rescheduled");
+                await _interviewerService.interviewUpdated(existingInterview,"Rescheduled");
             }
             return await _interviewRepository.updateInterview(existingInterview);
         }
@@ -115,5 +120,7 @@ namespace Recruitment_Process_Management_System.Services
 
             await _notification_CandidateService.saveCandidateNotification(notifications_CandidateDTO);
         }
+
+        
     }
 }
