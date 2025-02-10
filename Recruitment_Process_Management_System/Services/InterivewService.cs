@@ -10,16 +10,19 @@ namespace Recruitment_Process_Management_System.Services
         private readonly ICandidate_Application_StatusRepository _candidate_Application_StatusRepository;
         private readonly IInterview_TypeRepository _interview_TypeRepository;
         private readonly IInterview_StatusRepository _interview_StatusRepository;
+        private readonly INotification_CandidateService _notification_CandidateService;
 
         public InterviewService(IInterviewRepository interviewRepository,
         ICandidate_Application_StatusRepository candidate_Application_StatusRepository,
         IInterview_StatusRepository interview_StatusRepository,
-        IInterview_TypeRepository interview_TypeRepository)
+        IInterview_TypeRepository interview_TypeRepository,
+        INotification_CandidateService notification_CandidateService)
         {
             _interviewRepository = interviewRepository;
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
             _interview_StatusRepository = interview_StatusRepository;
             _interview_TypeRepository = interview_TypeRepository;
+            _notification_CandidateService = notification_CandidateService;
         }
 
         public async Task<bool> deleteInterview(int Interview_id) {
@@ -61,6 +64,7 @@ namespace Recruitment_Process_Management_System.Services
                 Created_at = DateTime.Now,
                 Updated_at = DateTime.Now
             };
+            await sendNotification(interview,"Scheduled");
             return await _interviewRepository.saveInterview(interview);
         }
         public async Task<Interview> updateInterview(int Interview_id, InterviewDTO interviewDTO) {
@@ -92,7 +96,24 @@ namespace Recruitment_Process_Management_System.Services
             existingInterview.Interview_Meeting_Link = interviewDTO.Interview_Meeting_Link;
             existingInterview.Updated_at = DateTime.Now;
 
+            if(!(existingInterview.Scheduled_at != interviewDTO.Scheduled_at))
+            {
+                await sendNotification(existingInterview,"Rescheduled");
+            }
             return await _interviewRepository.updateInterview(existingInterview);
+        }
+
+        public async Task sendNotification(Interview interview,string Action)
+        {
+            string message = "Your Interview has been " + Action + " on " + interview.Scheduled_at.ToString() + " For Job Title " + interview.candidate_Application_Status.job.Job_title + ".\n This is " + interview.interview_Type.Interview_Type_name + " and This is Round Number " + interview.Number_of_round.ToString();
+            Notifications_CandidateDTO notifications_CandidateDTO = new Notifications_CandidateDTO
+            {
+                Candidate_id = interview.candidate_Application_Status.Candidate_id,
+                Message = message,
+                Status = false
+            };
+
+            await _notification_CandidateService.saveCandidateNotification(notifications_CandidateDTO);
         }
     }
 }

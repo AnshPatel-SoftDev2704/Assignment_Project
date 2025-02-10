@@ -10,14 +10,17 @@ namespace Recruitment_Process_Management_System.Services
         private readonly ICandidate_DetailsRepository _candidate_DetailsRepository;
         private readonly IJobsRepository _jobsRepository;
         private readonly IApplication_StatusRepository _application_StatusRepository;
+        private readonly INotification_CandidateService _notification_CandidateService;
 
         public Candidate_Application_StatusService(ICandidate_Application_StatusRepository candidate_Application_StatusRepository,ICandidate_DetailsRepository candidate_DetailsRepository,
-        IJobsRepository jobsRepository,IApplication_StatusRepository application_StatusRepository)
+        IJobsRepository jobsRepository,IApplication_StatusRepository application_StatusRepository,
+        INotification_CandidateService notification_CandidateService)
         {
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
             _candidate_DetailsRepository = candidate_DetailsRepository;
             _jobsRepository = jobsRepository;
             _application_StatusRepository = application_StatusRepository;
+            _notification_CandidateService = notification_CandidateService;
         }
 
         public async Task<bool> deleteCandidate_Application_Status(int Candidate_Application_Status_id) {
@@ -84,7 +87,24 @@ namespace Recruitment_Process_Management_System.Services
             response.application_Status = applicationStatus;
             response.Applied_Date = candidate_Application_StatusDTO.Applied_Date;
             response.Updated_at = DateTime.Now;
+            Console.WriteLine(response.application_Status.Application_Status_Name != applicationStatus.Application_Status_Name);
+            if(!(response.application_Status.Application_Status_Name != applicationStatus.Application_Status_Name))
+            {
+                await sendNotification(response);
+            }
             return await _candidate_Application_StatusRepository.updateCandidate_Application_Status(response);
+        }
+
+        public async Task sendNotification(Candidate_Application_Status candidate_Application_Status)
+        {
+            string message = "Your Application Status for Job title " + candidate_Application_Status.job.Job_title + " is " + candidate_Application_Status.application_Status.Application_Status_Name;
+            Notifications_CandidateDTO notifications_CandidateDTO = new Notifications_CandidateDTO
+            {
+                Candidate_id  = candidate_Application_Status.Candidate_id,
+                Message = message,
+                Status = false
+            };
+            await _notification_CandidateService.saveCandidateNotification(notifications_CandidateDTO);
         }
     }
 }
