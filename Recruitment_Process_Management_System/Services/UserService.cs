@@ -53,5 +53,11 @@ namespace Recruitment_Process_Management_System.Services
             existingUser.Updated_at = DateTime.Now;
             return await _userRepository.updateUser(existingUser,"update");
         }
+
+        public async Task<User> getUser(string username)
+        {
+            var user = await  _userRepository.GetPassword(username);
+            return user;
+        }
     }
 }

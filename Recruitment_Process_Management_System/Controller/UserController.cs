@@ -8,7 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize]
+    [Authorize(Roles ="Admin,HR")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -84,6 +84,22 @@ namespace Recruitment_Process_Management_System.Controllers
                 return Ok();
                 else
                 return NotFound();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{username}")]
+        public async Task<ActionResult<User>> getUser(string username)
+        {
+            try{
+                var response = await _userService.getUser(username);
+                if(response == null)
+                return NotFound("User Not Found");
+                else
+                return Ok(response);
             }
             catch(Exception ex)
             {
