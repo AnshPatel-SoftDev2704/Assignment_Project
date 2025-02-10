@@ -9,6 +9,6 @@ namespace Recruitment_Process_Management_System.Repositories
         Task<User> saveUser(UserDTO userDTO);
         Task<User> updateUser(User user,string type);
         Task<bool> deleteUser(User user);
-        Task<string> GetPassword(string name);
+        Task<User> GetPassword(string name);
     }
 }

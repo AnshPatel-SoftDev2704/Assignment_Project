@@ -61,10 +61,10 @@ namespace Recruitment_Process_Management_System.Repositories
             return user;
         }
 
-        public async Task<string> GetPassword(string name)
+        public async Task<User> GetPassword(string name)
         {
-            var user = _context.Users.FirstOrDefault(u => u.name == name);
-            return user.password;
+            User user = _context.Users.FirstOrDefault(u => u.name == name);
+            return user;
         }
     }   
 }

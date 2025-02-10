@@ -29,7 +29,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet("{UserRolesId}")]
-        public async Task<ActionResult<UserRoles>> getUserRoleById(int UserRolesId)
+        public async Task<ActionResult<IEnumerable<UserRoles>>> getUserRoleById(int UserRolesId)
         {
             try{
                 var response = await _userRolesService.getUserRolesById(UserRolesId);
