@@ -6,9 +6,10 @@ namespace Recruitment_Process_Management_System.Repositories
     {
         Task<IEnumerable<UserRoles>> getAllUserRoles();
 
-        Task<UserRoles> getUserRolesById(int UserRolesId);
+        Task<IEnumerable<UserRoles>> getUserRolesById(int UserRolesId);
         Task<UserRoles> saveUserRoles(UserRoles userRole);
         Task<UserRoles> updateUserRoles(UserRoles userRole);
         Task<bool> deleteUserRoles(UserRoles userRole);
+        Task<UserRoles> getUserRolesByUserRoleId(int UserRolesId);
     }
 }

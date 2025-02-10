@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Services;
 
@@ -15,9 +16,9 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost("login")]
-        public string Authenticate([FromBody] string Name,string Password)
+        public async Task<string> Authenticate(string Name,[FromBody]string Password)
         {
-            var token = _authService.Authenticate(Name,Password);
+            var token = await _authService.Authenticate(Name,Password);
             return token;
         }
 

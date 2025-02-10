@@ -23,7 +23,7 @@ namespace Recruitment_Process_Management_System.Services
         public async Task<bool> deleteUserRoles(int UserRolesId)
         {
             try{
-                var userRole = await _userRolesRepository.getUserRolesById(UserRolesId);
+                var userRole = await _userRolesRepository.getUserRolesByUserRoleId(UserRolesId);
                 if(userRole == null)
                 return false;
                 _userRolesRepository.deleteUserRoles(userRole);
@@ -47,9 +47,9 @@ namespace Recruitment_Process_Management_System.Services
             }
         }
 
-        public async Task<UserRoles> getUserRolesById(int UserRolesId) {
+        public async Task<IEnumerable<UserRoles>> getUserRolesById(int User_id) {
             try{
-                return await _userRolesRepository.getUserRolesById(UserRolesId);
+                return await _userRolesRepository.getUserRolesById(User_id);
             }
             catch(Exception ex)
             {
@@ -82,7 +82,7 @@ namespace Recruitment_Process_Management_System.Services
 
         public async Task<UserRoles> updateUserRoles(int UserRolesId, UserRolesDTO userRolesDTO) {
             try{
-                var existingUserRole = await _userRolesRepository.getUserRolesById(UserRolesId);
+                var existingUserRole = await _userRolesRepository.getUserRolesByUserRoleId(UserRolesId);
                 if(existingUserRole == null)
                 return null;
                 var responseUser = await _userRepository.getUserById(userRolesDTO.User_id);

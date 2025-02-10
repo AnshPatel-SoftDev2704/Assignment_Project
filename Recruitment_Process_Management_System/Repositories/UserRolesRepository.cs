@@ -38,16 +38,29 @@ namespace Recruitment_Process_Management_System.Repositories
             } 
         }
 
-        public async Task<UserRoles> getUserRolesById(int UserRolesId)
+        public async Task<IEnumerable<UserRoles>> getUserRolesById(int UserRolesId)
         {
             try{
-                var userRole = _context.UserRoles.Include(u => u.user).Include(r=>r.role).FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
-                return userRole;
+                IEnumerable<UserRoles> userRole = _context.UserRoles.Include(u => u.user).Include(r=>r.role).ToList();
+                IEnumerable<UserRoles> roles = userRole.Where(r => r.User_id == UserRolesId);
+                return roles;
             }
             catch(Exception ex)
             {
                 throw;
             }    
+        }
+
+        public async Task<UserRoles> getUserRolesByUserRoleId(int UserRolesId)
+        {
+            try{
+                var userrole = _context.UserRoles.FirstOrDefault(ur => ur.UserRoleId == UserRolesId);
+                return userrole;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<UserRoles> saveUserRoles(UserRoles userRole)

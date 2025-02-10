@@ -1,46 +1,53 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Repositories;
 
 namespace Recruitment_Process_Management_System.Services
 {
-    public class AuthService(IConfiguration configuration, IUserRepository userRepository)
+    public class AuthService(IConfiguration configuration, IUserRepository userRepository,IUserRolesRepository userRolesRepository)
     {
         private readonly IConfiguration _configuration = configuration;
 
         private readonly IUserRepository _userRepository = userRepository;
 
-        public string Authenticate(string Name,string Password)
+        private readonly IUserRolesRepository _userRolesRepository = userRolesRepository;
+        public async Task<string> Authenticate(string Name,string Password)
         {
-            var response = _userRepository.GetPassword(Name);
-            var password = response.ToString();
-            if(Password == password)
+            var response = await _userRepository.GetPassword(Name);
+            List<UserRoles> roles = (await _userRolesRepository.getUserRolesById(response.User_id)).ToList();
+            if(Password == response.password)
             {
-                return GenerateJwtToken(Name,Password,"admin");
+                return GenerateJwtToken(Name,Password,roles);
             }
             else
             return "";
         }
 
-        public string GenerateJwtToken(string userName, string Password, string role)
+        public string GenerateJwtToken(string userName, string Password,List<UserRoles> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]);
+            var claim = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.GivenName, Password)
+            };
 
+            foreach(var role in roles)
+            {
+                claim.Add(new Claim(ClaimTypes.Role,role.role.Role_Name));
+            }
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userName),
-                    new Claim(ClaimTypes.GivenName, Password),
-                    new Claim(ClaimTypes.Role, role)
-                }),
+                Subject = new ClaimsIdentity(claim),
                 IssuedAt = DateTime.UtcNow,
                 Issuer = _configuration["JWT:Issuer"],
                 Audience = _configuration["JWT:Audience"],
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(300),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             };
 
