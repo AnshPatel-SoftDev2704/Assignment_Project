@@ -13,5 +13,7 @@ namespace Recruitment_Process_Management_System.Services
         Task<Interview> updateInterview(int Interview_id,InterviewDTO interviewDTO);
 
         Task<bool> deleteInterview(int Interview_id);
+
+        Task sendNotification(Interview interview, string Action);
     }
 }
