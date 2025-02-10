@@ -9,5 +9,7 @@ namespace Recruitment_Process_Management_System.Services
         Task<User> saveUser(UserDTO useDTO);
         Task<User> updateUser(int userId,UserDTO userDTO);
         Task<bool> deleteUser(int userId);
+
+        Task<User> getUser(string username);
     }
 }
