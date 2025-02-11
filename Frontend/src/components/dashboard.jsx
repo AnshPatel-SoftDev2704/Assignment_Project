@@ -7,6 +7,8 @@ import DisplayRole from './Role/showRole';
 import CreateRole from './Role/addRole';
 import DisplayUserRole from './UserRoles/showUserRoles';
 import CreateUserRole from './UserRoles/addUserRoles';
+import DisplaySkill from './Skill/showSkills';
+import CreateSkill from './Skill/addSkills';
 const Dashboard = () => {
     const [showUser, setShowUser] = useState(false);
     const [addUser,setAddUser] = useState(false);
@@ -14,6 +16,8 @@ const Dashboard = () => {
     const [addRole,setAddRole] = useState(false)
     const [showUserRole,setShowUserRole] = useState(false)
     const [addUserRole,setAddUserRole] = useState(false)
+    const [showSkill,setShowSkill] = useState(false)
+    const [addSkill,setAddSkill] = useState(false)
     const data = useSelector((state) => state.Userdata);
     const handleShowUser = () => {
         setShowUser(prev => !prev);
@@ -37,6 +41,14 @@ const Dashboard = () => {
     const handleAddUserRole = () => {
         setAddUserRole(prev => !prev)
     }
+
+    const handleShowSkill = () => {
+        setShowSkill(prev => !prev)
+    }
+
+    const handleAddSkill = () => {
+        setAddSkill(prev => !prev)
+    }
     return (
         <>
             <h1>Welcome {data[0].name}</h1>
@@ -46,12 +58,16 @@ const Dashboard = () => {
             <Button className = 'ml-2' onClick={handleAddRole}>Add Role</Button>
             <Button className = 'ml-2' onClick={handleShowUserRole}>Show UserRoles</Button>
             <Button className = 'ml-2' onClick={handleAddUserRole}>Add UserRoles</Button>
+            <Button className = 'ml-2' onClick={handleShowSkill}>Show Skill</Button>
+            <Button className = 'ml-2' onClick={handleAddSkill}>Add Skill</Button>
             {showUser && <ShowUser />}
             {addUser && <SaveUser/>}
             {showRole && <DisplayRole/>}
             {addRole && <CreateRole/>}
             {showUserRole && <DisplayUserRole/>}
             {addUserRole && <CreateUserRole/>}
+            {showSkill && <DisplaySkill/>}
+            {addSkill && <CreateSkill/>}
         </>
     );
 };
