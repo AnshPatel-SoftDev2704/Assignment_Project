@@ -15,11 +15,17 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip";
 import { Pencil, Trash2 } from "lucide-react";
-import {getAllUser} from '@/services/Users/api';
-import { useEffect } from 'react';
+import {deleteUser, getAllUser} from '@/services/Users/api';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import UpdateUser from './updateUser';
+import DeleteUser from './deleteUser';
 
 const ShowUser = () => {
+    const [showEditDialog,setShowEditDialog] = useState(false);
+    const [showDeleteDialog,setShowDeleteDialog] = useState(false)
+    const [editUser,setEditUser] = useState({})
+    const [deleteUserData,setDeleteUserData] = useState({})
     const dispatch = useDispatch();
     const data = useSelector((state) => state.Userdata);
     const users = useSelector((state) => state.Users);
@@ -30,6 +36,17 @@ const ShowUser = () => {
         };
         fetchData();
     }, []);
+
+
+    const handleEdit = async (user) => {
+        setShowEditDialog(true);
+        setEditUser(user);
+    }
+
+    const handleDelete = async (user) => {
+        setShowDeleteDialog(true)
+        setDeleteUserData(user)
+    }
 
     return (
         <>
@@ -60,7 +77,7 @@ const ShowUser = () => {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8"
-                                                    // onClick={() => handleEdit(user)}
+                                                    onClick={() => handleEdit(user)}
                                                 >
                                                     <Pencil className="h-4 w-4" />
                                                 </Button>
@@ -75,7 +92,7 @@ const ShowUser = () => {
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-8 w-8 text-red-500 hover:text-red-600"
-                                                    // onClick={() => handleDeleteDialog(user)}
+                                                    onClick={() => handleDelete(user)}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
@@ -91,6 +108,8 @@ const ShowUser = () => {
                     </TableBody>
                 </Table>
             </div>
+            {showEditDialog && <UpdateUser showEditDialog={showEditDialog} setShowEditDialog={setShowEditDialog} editUser={editUser}/>}
+            {showDeleteDialog && <DeleteUser showDeleteDialog = {showDeleteDialog} setShowDeleteDialog={setShowDeleteDialog} deleteUserData = {deleteUserData}/>}
         </>
     );
 }
