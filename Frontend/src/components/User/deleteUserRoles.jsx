@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUserRole, getAllUserRoles } from '@/services/UserRoles/api';
+import { deleteUserRole, getAllUserRoles } from '@/services/Users/api';
 import { getUserRole } from '@/store/UserRoles/actions';
 
 const DeleteUserRole = ({ showDeleteDialog, setShowDeleteDialog, deleteUserRoles }) => {
@@ -16,6 +16,7 @@ const DeleteUserRole = ({ showDeleteDialog, setShowDeleteDialog, deleteUserRoles
     const dispatch = useDispatch();
     const handleDelete = async () => {
         try {
+            console.log(deleteUserRoles.userRoleId)
             await deleteUserRole(data[0].token, deleteUserRoles.userRoleId);
             const result = await getAllUserRoles(data[0].token);
             dispatch(getUserRole(result.data));

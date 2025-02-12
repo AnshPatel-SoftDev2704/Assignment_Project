@@ -109,7 +109,7 @@ namespace Recruitment_Process_Management_System.Services
             try{
                 var responseUser = await _userRepository.getUserById(userRolesDTO.User_id);
                 var responseRole = await _roleRepository.getRoleById(userRolesDTO.Role_id);
-
+                Console.WriteLine(responseUser.name);
                 UserRoles userRole = new UserRoles{
                     User_id = userRolesDTO.User_id,
                     user = responseUser,
@@ -122,7 +122,7 @@ namespace Recruitment_Process_Management_System.Services
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex,"Error while Fetching User Role By Id");
+                _logger.LogError(ex,"Error while Fetching User or Role By Id");
                 throw;
             }
         }
