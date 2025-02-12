@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllUserRoles } from '@/services/UserRoles/api';
+import { getAllUserRoles } from '@/services/Users/api';
 import { getUserRole } from '@/store/UserRoles/actions';
 import {
     Table,

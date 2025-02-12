@@ -11,7 +11,6 @@ namespace Recruitment_Process_Management_System.Services
         private readonly ICandidate_Application_StatusRepository _candidate_Application_StatusRepository;
         private readonly IInterview_TypeRepository _interview_TypeRepository;
         private readonly IInterview_StatusRepository _interview_StatusRepository;
-        private readonly INotification_CandidateService _notification_CandidateService;
         private readonly IInterviewerRepository _interviewerRepository;
         private readonly IUserRepository _userRepository;
         private readonly INotifications_UsersService _notifications_UsersService;
@@ -22,7 +21,6 @@ namespace Recruitment_Process_Management_System.Services
         ICandidate_Application_StatusRepository candidate_Application_StatusRepository,
         IInterview_StatusRepository interview_StatusRepository,
         IInterview_TypeRepository interview_TypeRepository,
-        INotification_CandidateService notification_CandidateService,
         IInterviewerRepository interviewerRepository,IFeedbackRepository feedbackRepository,
         IUserRepository userRepository,INotifications_UsersService notifications_UsersService)
         {
@@ -30,7 +28,6 @@ namespace Recruitment_Process_Management_System.Services
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
             _interview_StatusRepository = interview_StatusRepository;
             _interview_TypeRepository = interview_TypeRepository;
-            _notification_CandidateService = notification_CandidateService;
             _interviewerRepository = interviewerRepository;
             _userRepository = userRepository;
             _notifications_UsersService = notifications_UsersService;

@@ -15,11 +15,12 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip";
 import { Pencil, Trash2 } from "lucide-react";
-import {deleteUser, getAllUser} from '@/services/Users/api';
+import {deleteUser, getAllRole, getAllUser} from '@/services/Users/api';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import UpdateUser from './updateUser';
 import DeleteUser from './deleteUser';
+import { getRole } from '@/store/Roles/actions';
 
 const ShowUser = () => {
     const [showEditDialog,setShowEditDialog] = useState(false);
@@ -32,6 +33,8 @@ const ShowUser = () => {
     useEffect(() => {
         const fetchData = async () => {
             const response = await getAllUser(data[0].token);
+            const roles = await getAllRole(data[0].token);
+            dispatch(getRole(roles.data))
             dispatch(getUser(response.data));
         };
         fetchData();

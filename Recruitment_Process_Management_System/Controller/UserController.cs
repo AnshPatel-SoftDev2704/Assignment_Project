@@ -7,7 +7,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,HR")]
+    // [Authorize(Roles ="Admin,HR")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -132,10 +132,12 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
 
-        [HttpPost("/saveUserRoles")]
+        [HttpPost("saveUserRoles")]
         public async Task<ActionResult<UserRoles>> saveUserRole(UserRolesDTO userRolesDTO)
         {
             try{
+                Console.WriteLine(userRolesDTO.User_id);
+                Console.WriteLine(userRolesDTO.Role_id);
                 var response = await _userService.saveUserRoles(userRolesDTO);
                 if(response == null)
                 return NotFound("User or Role Not Found");
@@ -148,7 +150,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
 
-        [HttpPut("/updateUserRole/{UserRolesId}")]
+        [HttpPut("updateUserRole/{UserRolesId}")]
         public async Task<ActionResult<UserRoles>> updateUserRole(int UserRolesId,UserRolesDTO userRolesDTO)
         {
             try{
@@ -164,7 +166,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
 
-        [HttpDelete("/deleteUserRole/{UserRolesId}")]
+        [HttpDelete("deleteUserRole/{UserRolesId}")]
         public async Task<ActionResult<bool>> deleteUserRole(int UserRolesId)
         {
             try{

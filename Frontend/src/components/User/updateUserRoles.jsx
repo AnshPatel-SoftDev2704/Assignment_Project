@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserRole, getAllUserRoles } from '@/services/UserRoles/api';
+import { updateUserRole, getAllUserRoles } from '@/services/Users/api';
 import { getUserRole } from '@/store/UserRoles/actions';
 import { getAllUser } from '@/services/Users/api';
-import { getAllRole } from '@/services/Roles/api';
+import { getAllRole } from '@/services/Users/api';
 
 const UpdateUserRole = ({ showEditDialog, setShowEditDialog, editUserRole }) => {
     const data = useSelector((state) => state.Userdata);
