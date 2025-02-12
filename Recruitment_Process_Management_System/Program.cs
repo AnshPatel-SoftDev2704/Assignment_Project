@@ -38,7 +38,6 @@ builder.Services.AddScoped<IInterview_StatusRepository, Interview_StatusReposito
 builder.Services.AddScoped<IInterviewService,InterviewService>();
 builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
 builder.Services.AddScoped<IInterviewerRepository, InterviewerRepository>();
-builder.Services.AddScoped<IDocument_TypeService,Document_TypeService>();
 builder.Services.AddScoped<IDocument_TypeRepository, Document_TypeRespository>();
 builder.Services.AddScoped<IDocument_SubmittedService,Document_SubmittedService>();
 builder.Services.AddScoped<IDocument_SubmittedRepository, Document_SubmittedRepository>();

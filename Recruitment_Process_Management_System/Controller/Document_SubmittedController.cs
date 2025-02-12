@@ -12,15 +12,13 @@ namespace Recruitment_Process_Management_System.Controllers
         private readonly IDocument_SubmittedService? _document_SubmittedService;
         private readonly ICandidate_DetailsService _candidate_DetailsService;
         private readonly IJobsSerivce _jobsSerivce;
-        private readonly IDocument_TypeService _document_TypeService;
         private readonly IUserService _userService;
 
-        public Document_SubmittedController(IDocument_SubmittedService document_SubmittedService,ICandidate_DetailsService candidate_DetailsService,IJobsSerivce jobsSerivce,IDocument_TypeService document_TypeService,IUserService userService)
+        public Document_SubmittedController(IDocument_SubmittedService document_SubmittedService,ICandidate_DetailsService candidate_DetailsService,IJobsSerivce jobsSerivce,IUserService userService)
         {
             _document_SubmittedService = document_SubmittedService;
             _candidate_DetailsService = candidate_DetailsService;
             _jobsSerivce = jobsSerivce;
-            _document_TypeService = document_TypeService;
             _userService = userService;
         }
 
@@ -65,7 +63,7 @@ namespace Recruitment_Process_Management_System.Controllers
             if(newJob == null)
             return NotFound("Job Not Found");
 
-            var newDocument_Type = await _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newDocument_Type = await _document_SubmittedService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
 
@@ -95,7 +93,7 @@ namespace Recruitment_Process_Management_System.Controllers
             if(newJob == null)
             return NotFound("Job Not Found");
 
-            var newDocument_Type = await  _document_TypeService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
+            var newDocument_Type = await  _document_SubmittedService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
 
@@ -131,6 +129,91 @@ namespace Recruitment_Process_Management_System.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("GetAllDocumentType")]
+        public async Task<ActionResult<IEnumerable<Document_Type>>> getAllDocument_Type()
+        {
+            try{
+                var responses = await _document_SubmittedService.getAllDocument_Type();
+                return Ok(responses);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetDocumentTypeById/{Document_Type_id}")]
+        public async Task<ActionResult<Document_Type>> getDocument_TypeById(int Document_Type_id)
+        {
+            try{
+                var response = await _document_SubmittedService.getDocument_TypeById(Document_Type_id);
+                if(response == null)
+                return NotFound("Document Type Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
+        [HttpPost("SaveDocumentType")]
+        public async Task<ActionResult<Document_Type>> saveDocument_Type(Document_Type document_Type)
+        {
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+            try{
+                var response = await _document_SubmittedService.saveDocumenty_Type(document_Type);
+                if(response == null)
+                return BadRequest("Document Type is already Present");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
+        [HttpPut("UpdateDocumentType/{Document_Type_id}")]
+        public async Task<ActionResult<Document_Type>> updateDocument_Type(int Document_Type_id,Document_Type document_Type)
+        {
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
+            try{
+                var response = await _document_SubmittedService.updateDocument_Type(Document_Type_id,document_Type);
+                if(response == null)
+                return NotFound("Document Type Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
+        [HttpDelete("DeleteDocumentType/{Document_Type_id}")]
+        public async Task<ActionResult<Document_Type>> deleteDocument_Type(int Document_Type_id)
+        {
+             try{
+                var response = await _document_SubmittedService.deleteDocument_Type(Document_Type_id);
+                if(response)
+                return Ok("Document Type Deleted Successfully");
+                else
+                return NotFound("Document Type Not Found");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }
