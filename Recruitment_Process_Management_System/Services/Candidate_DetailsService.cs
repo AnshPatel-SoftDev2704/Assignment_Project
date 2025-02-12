@@ -13,11 +13,11 @@ namespace Recruitment_Process_Management_System.Services
         private readonly ISkillRepository _skillRepository;
         private readonly ICandidate_Application_StatusRepository _candidate_Application_StatusRepository;
         private readonly IJobsRepository _jobsRepository;
-        private readonly INotification_CandidateService _notification_CandidateService;
+        private readonly INotifications_UsersService _notifications_UsersService;
         
         public Candidate_DetailsService(ICandidate_DetailsRepository candidate_DetailsRepository,IRoleRepository roleRepository,IApplication_StatusRepository application_StatusRepository,ICandidate_SkillsRepostiroy candidate_SkillsRepostiroy,
         ISkillRepository skillRepository,ICandidate_Application_StatusRepository candidate_Application_StatusRepository
-        ,IJobsRepository jobsRepository,INotification_CandidateService notification_CandidateService)
+        ,IJobsRepository jobsRepository,INotifications_UsersService notifications_UsersService)
         {
             _candidate_DetailsRepository = candidate_DetailsRepository;
             _roleRepository = roleRepository;
@@ -26,7 +26,7 @@ namespace Recruitment_Process_Management_System.Services
             _skillRepository = skillRepository;
             _jobsRepository = jobsRepository;
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
-            _notification_CandidateService = notification_CandidateService;
+            _notifications_UsersService = notifications_UsersService;
         }
 
         public async Task<bool> deleteCandidate_Details(int Candidate_id) {
@@ -225,7 +225,7 @@ namespace Recruitment_Process_Management_System.Services
                 Message = message,
                 Status = false
             };
-            await _notification_CandidateService.saveCandidateNotification(notifications_CandidateDTO);
+            await _notifications_UsersService.saveCandidateNotification(notifications_CandidateDTO);
         }
     }
 }
