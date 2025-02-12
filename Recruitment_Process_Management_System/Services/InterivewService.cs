@@ -126,7 +126,7 @@ namespace Recruitment_Process_Management_System.Services
                 Status = false
             };
 
-            await _notification_CandidateService.saveCandidateNotification(notifications_CandidateDTO);
+            await _notifications_UsersService.saveCandidateNotification(notifications_CandidateDTO);
         }
 
         public async Task<IEnumerable<Interview_Status>> getAllInterview_Status() => await _interview_StatusRepository.getAllInterview_Status();
