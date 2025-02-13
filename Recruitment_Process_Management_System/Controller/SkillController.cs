@@ -8,7 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "HR,Interviewer")]
+    // [Authorize(Roles = "HR,Interviewer")]
     public class SkillController : ControllerBase
     {
         private readonly ISkillService _skillService;

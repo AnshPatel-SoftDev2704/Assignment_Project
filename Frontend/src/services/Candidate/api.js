@@ -1,0 +1,236 @@
+import axios from "axios";
+
+const getCandidateDetailById = async (token,id) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details/${id}`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const getAllCandidateSkill = async (token) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details/GetAllCandidateSkills`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const updateCandidate = async(token,data,user_id) => {
+    try{
+        data.Role_id = 6;
+        const response = await axios.put(`http://localhost:5195/api/Candidate_Details/${user_id}`,data,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const getAllCandidates = async (token) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const saveCandidateSkill = async (token, data, candidate_id) => {
+    try {
+        if (!token || !data || !candidate_id) {
+            throw new Error('Missing required parameters: token, data, or candidate_id');
+        }
+
+        if (!data.skill_id || !data.experience) {
+            throw new Error('Missing required fields: skill_id or experience');
+        }
+
+        const payload = {
+            candidate_id: candidate_id,
+            skill_id: data.skill_id,
+            total_skill_work_experience: data.experience
+        };
+
+        const response = await axios.post(
+            'http://localhost:5195/api/Candidate_Details/SaveCandidateSkill',
+            payload,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            console.error('Server Error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+            throw new Error(`Server error: ${error.response.data}`);
+        } else if (error.request) {
+            console.error('Network Error:', error.request);
+            throw new Error('Network error: Unable to reach the server');
+        } else {
+            console.error('Request Error:', error.message);
+            throw error;
+        }
+    }
+};
+
+const getAllApplications = async (token) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details/GetAllCandidateApplicationStatus`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const getAllApplicationStatuses = async (token) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details/GetAllApplicationStatus`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const saveCandidateDetails = async(token,data) => {
+    try{
+        const response = await axios.post(`http://localhost:5195/api/Candidate_Details`,data,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        if (error.response) {
+            console.error('Server Error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+            throw new Error(`Server error: ${error.response.data}`);
+        } else if (error.request) {
+            console.error('Network Error:', error.request);
+            throw new Error('Network error: Unable to reach the server');
+        } else {
+            console.error('Request Error:', error.message);
+            throw error;
+        }
+    }
+}
+
+const deleteCandidate = async (token,candidate_id) => {
+    try{
+        const response = await axios.delete(`http://localhost:5195/api/Candidate_Details/${candidate_id}`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const updateApplicationStatus = async (token,id,data) => {
+    try{
+        const response = await axios.put(`http://localhost:5195/api/Candidate_Details/UpdateCandidateApplicationStatus/${id}`,data,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const saveCandidateApplicationStatus = async (token, candidate_id, job_id, application_Status_id, todayDate) => {
+    try {
+        const response = await axios.post(
+            `http://localhost:5195/api/Candidate_Details/SaveCandidateApplicationStatus`,
+            { candidate_id, job_id, application_Status_id, Applied_Date: todayDate },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        return response;
+    } catch (error) {
+        if (error.response) {
+            console.error('Server Error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+            throw new Error(`Server error: ${error.response.data}`);
+        } else if (error.request) {
+            console.error('Network Error:', error.request);
+            throw new Error('Network error: Unable to reach the server');
+        } else {
+            console.error('Request Error:', error.message);
+            throw error;
+        }
+    }
+};
+
+
+export {saveCandidateApplicationStatus,updateApplicationStatus, deleteCandidate, getCandidateDetailById,getAllCandidateSkill,updateCandidate,saveCandidateSkill, getAllApplications, getAllApplicationStatuses, saveCandidateDetails, getAllCandidates};

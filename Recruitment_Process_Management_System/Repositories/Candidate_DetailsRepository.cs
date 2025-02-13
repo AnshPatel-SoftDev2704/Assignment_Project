@@ -49,5 +49,11 @@ namespace Recruitment_Process_Management_System.Repositories
             _context.SaveChanges();
             return candidate_Details;
         }
+
+        public async Task<Candidate_Details> GetCandidate_DetailsByName(string name)
+        {
+            Candidate_Details response = _context.Candidate_Details.FirstOrDefault(cd => cd.Candidate_name == name);
+            return response;
+        }
     }
 }

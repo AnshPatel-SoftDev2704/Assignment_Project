@@ -9,5 +9,6 @@ namespace Recruitment_Process_Management_System.Repositories
         Task<Candidate_Details> saveCandidate_Details(Candidate_Details candidate_Details);
         Task<Candidate_Details> updateCandidate_Details(Candidate_Details candidate_Details);
         Task<bool> deleteCandidate_Details(Candidate_Details candidate_Details);
+        Task<Candidate_Details> GetCandidate_DetailsByName(string name);
     }
 }

@@ -18,7 +18,6 @@ namespace Recruitment_Process_Management_System.Controllers
         [HttpPost("login/{Name}")]
         public async Task<string> Authenticate(string Name,[FromBody]string Password)
         {
-            Console.WriteLine(Name);
             var token = await _authService.Authenticate(Name,Password);
             return token;
         }

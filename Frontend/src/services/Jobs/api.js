@@ -34,8 +34,6 @@ const saveJobs = async (token,data) => {
 
 const saveRequiredSkill = async (token,Job_id,Skill_id) => {
     try{
-        console.log(Job_id)
-        console.log(Skill_id)
         const response = await axios.post(`http://localhost:5195/api/Jobs/SaveRequiredJobSkill`,{Job_id,Skill_id},{
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -53,6 +51,38 @@ const saveRequiredSkill = async (token,Job_id,Skill_id) => {
 const savePreferredSkill = async (token,Job_id,Skill_id) => {
     try{
         const response = await axios.post(`http://localhost:5195/api/Jobs/SavePreferredJobSkill`,{Job_id,Skill_id},{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const deletePreferredSkill = async(token,id) => {
+    try{
+        const response = await axios.delete(`http://localhost:5195/api/Jobs/DeletePreferredJobSkill/${id}`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const deleteRequiredSkill = async(token,id) => {
+    try{
+        const response = await axios.delete(`http://localhost:5195/api/Jobs/deleteRequiredJobSkill/${id}`,{
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -146,4 +176,4 @@ const deleteJob = async (token,Job_id) => {
     }
 }
 
-export {getAllJobs, saveJobs, savePreferredSkill, saveRequiredSkill, getAllJobStatus, getAllPreferredSkill, getAllRequiredSkill, updateJob, deleteJob}
+export {deletePreferredSkill, deleteRequiredSkill, getAllJobs, saveJobs, savePreferredSkill, saveRequiredSkill, getAllJobStatus, getAllPreferredSkill, getAllRequiredSkill, updateJob, deleteJob}
