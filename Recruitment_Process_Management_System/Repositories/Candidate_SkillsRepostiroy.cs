@@ -36,10 +36,6 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public async Task<Candidate_Skills> saveCandidate_Skill(Candidate_Skills candidate_Skills )
         {
-            var candidateSkill = _context.Candidate_Skills.FirstOrDefault(c => c.Skill_id == candidate_Skills.Skill_id);
-            if(candidateSkill != null)
-            throw new Exception("Skill is Already added");
-
             _context.Candidate_Skills.Add(candidate_Skills);
             _context.SaveChanges();
             return candidate_Skills;

@@ -263,8 +263,9 @@ namespace Recruitment_Process_Management_System.Controllers
         [HttpPost("SaveCandidateApplicationStatus")]
         public async Task<ActionResult<Candidate_Application_Status>> saveCandidate_Application_Status(Candidate_Application_StatusDTO candidate_Application_StatusDTO)
         {
-            if(!this.ModelState.IsValid)
-            return BadRequest(ModelState);
+            // if(!this.ModelState.IsValid)
+            // return BadRequest(ModelState);
+            Console.WriteLine(candidate_Application_StatusDTO.Candidate_id);
             try{
                 var response = await _candidate_DetailsService.saveCandidate_Application_Status(candidate_Application_StatusDTO);
                 if(response == null)
@@ -313,6 +314,19 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest(ex.Message);
             }
             
+        }
+
+        [HttpGet("getCandidateByName/{Name}")]
+        public async Task<ActionResult<Candidate_Details>> getCandidate_DetailsByName(string Name)
+        {
+            try{
+                var response = await _candidate_DetailsService.GetCandidate_DetailsByName(Name);
+                return response;
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

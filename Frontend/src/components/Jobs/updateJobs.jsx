@@ -21,7 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllSkill } from '@/services/Skills/api';
-import { getAllJobStatus, getAllRequiredSkill, getAllPreferredSkill, updateJob, saveRequiredSkill, savePreferredSkill, getAllJobs} from '@/services/Jobs/api';
+import { getAllJobStatus, getAllRequiredSkill, getAllPreferredSkill, updateJob, saveRequiredSkill, savePreferredSkill, getAllJobs, deleteRequiredSkill} from '@/services/Jobs/api';
 import { getJobs } from '@/store/Jobs/actions';
 const UpdateJob = ({ 
   showEditDialog, 
@@ -60,19 +60,26 @@ const UpdateJob = ({
 
     const [jobStatuses, setJobStatuses] = useState([]);
     const [skills, setSkills] = useState([]);
+    const [rawRequiredSkill,setRawRequiredSkill] = useState([])
+    const [raqPreferredSkill,setRawPreferredSkill] = useState([])
   
     useEffect(() => {
       const fetchData = async () => {
         const jobStatus = await getAllJobStatus(data[0].token);
         setJobStatuses(jobStatus.data);
+
         const skill = await getAllSkill(data[0].token);
         setSkills(skill.data);
+
         const requiredskills = await getAllRequiredSkill(data[0].token)
         const filteredRequiredSkills = requiredskills.data.filter(requiredskill => requiredskill.job_id === editJob.job_id && requiredskill.job_id > 0).map(skill => skill.skill)
         setRequired_Skills(filteredRequiredSkills)
+        setRawRequiredSkill(requiredskills.data)
+
         const preferredskills = await getAllPreferredSkill(data[0].token)
         const filteredPreferredSkills = preferredskills.data.filter(preferredskill => preferredskill.job_id === editJob.job_id && preferredskill.job_id > 0).map(skill => skill.skill)
         setPreferred_Skills(filteredPreferredSkills)
+        setRawPreferredSkill(preferredskills.data)
       };
       fetchData();
     }, []);
@@ -85,12 +92,16 @@ const UpdateJob = ({
 
     const [updatedRequiredSkill,setUpdatedRequiredSkill] = useState([])
     const [updatedPreferredSkill,setUpdatedPreferredSkill] = useState([])
+
+    const [removedRequiredSkill,setRemovedRequiredSkill] = useState([])
+    const [removedPreferredSkill,setRemovedPreferredSkill] = useState([])
   
     const handleAddRequiredSkill = () => {
       if (selectedRequiredSkill && !required_skills.find(skill => skill.skill_id === parseInt(selectedRequiredSkill))) {
         const skillToAdd = skills.find(skill => skill.skill_id === parseInt(selectedRequiredSkill));
         setRequired_Skills([...required_skills, skillToAdd]);
         setUpdatedRequiredSkill([...updatedRequiredSkill,skillToAdd])
+        removedRequiredSkill.filter(skill => skill.skill.skill_id !== parseInt(selectedRequiredSkill))
       }
       setSelectedRequiredSkill("");
     };
@@ -100,6 +111,7 @@ const UpdateJob = ({
         const skillToAdd = skills.find(skill => skill.skill_id === parseInt(selectedPreferredSkill));
         setPreferred_Skills([...preferred_skills, skillToAdd]);
         setUpdatedPreferredSkill([...updatedPreferredSkill,skillToAdd])
+        removedPreferredSkill.filter(skill => skill.skill.skill_id !== parseInt(selectedPreferredSkill))
       }
       setSelectedPreferredSkill("");
     };
@@ -107,11 +119,16 @@ const UpdateJob = ({
     const handleRemoveRequiredSkill = (skillId) => {
       setRequired_Skills(required_skills.filter(skill => skill.skill_id !== skillId));
       setUpdatedRequiredSkill(required_skills.filter(skill => skill.skill_id !== skillId))
+      const skillToAdd = skills.find(skill => skill.skill_id === skillId);
+      setRemovedRequiredSkill([...removedRequiredSkill,skillToAdd])
     };
   
     const handleRemovePreferredSkill = (skillId) => {
+      const skillToAdd = rawRequiredSkill.filter(skill => skill.skill.skill_id === skillId);
       setPreferred_Skills(preferred_skills.filter(skill => skill.skill_id !== skillId));
       setUpdatedPreferredSkill(preferred_skills.filter(skill => skill.skill_id !== skillId))
+      setRemovedPreferredSkill([...removedPreferredSkill,skillToAdd])
+      console.log(removedPreferredSkill)
     };
 
   const handleUpdate = async () => {
@@ -126,6 +143,12 @@ const UpdateJob = ({
       updatedPreferredSkill.forEach(skill => {
         const response = savePreferredSkill(data[0].token,editJob.job_id,skill.skill_id)
       });
+      removedRequiredSkill[0].forEach(skill => {
+        const id = deleteRequiredSkill(data[0].token,skill.required_job_skill_id)
+      })
+      removedPreferredSkill[0].forEach(skill => {
+        const id = deleteRequiredSkill(data[0].token,skill.preferred_job_skill_id)
+      })
       dispatch(getJobs(result.data));
       setShowEditDialog(false);
     } catch (err) {

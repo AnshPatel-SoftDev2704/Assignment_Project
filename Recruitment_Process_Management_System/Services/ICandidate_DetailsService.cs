@@ -36,5 +36,7 @@ namespace Recruitment_Process_Management_System.Services
         Task<bool> deleteCandidate_Application_Status(int Candidate_Application_Status_id);
 
         Task sendNotification(Candidate_Application_Status candidate_Application_Status);
+
+        Task<Candidate_Details> GetCandidate_DetailsByName(string name);
     }
 }

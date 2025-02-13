@@ -227,5 +227,11 @@ namespace Recruitment_Process_Management_System.Services
             };
             await _notifications_UsersService.saveCandidateNotification(notifications_CandidateDTO);
         }
+
+        public async Task<Candidate_Details> GetCandidate_DetailsByName(string Name)
+        {
+            Candidate_Details candidate = await _candidate_DetailsRepository.GetCandidate_DetailsByName(Name);
+            return candidate;
+        }
     }
 }

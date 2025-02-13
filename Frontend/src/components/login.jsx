@@ -18,9 +18,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await auth(username,password);
-    dispatch(login(response.data))
+    console.log(response)
+    dispatch(login(response))
     if(response.token === "")
     setError("Invalid Credentials")
+    else if(response.role === 'Candidate')
+    navigate("/candidate")
     else
     navigate("/dashboard")
   };

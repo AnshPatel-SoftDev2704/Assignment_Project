@@ -8,6 +8,9 @@ import DisplaySkill from './Skill/showSkills';
 import CreateSkill from './Skill/addSkills';
 import ShowJobs from './Jobs/showJobs';
 import CreateJob from './Jobs/saveJobs';
+import CreateCandidate from './Candidate/addCandidate';
+import ShowCandidates from './Candidate/showCandidates';
+import CandidateApplicationStatus from './Candidate/showCandidateApplicationStatus';
 const Dashboard = () => {
     const [showUser, setShowUser] = useState(false);
     const [addUser,setAddUser] = useState(false);
@@ -16,6 +19,9 @@ const Dashboard = () => {
     const [addSkill,setAddSkill] = useState(false)
     const [showJobs,setShowJobs] = useState(false)
     const [addJobs,setAddJobs] = useState(false)
+    const [addCandidate,setAddCandidate] = useState(false)
+    const [showCandidates,setShowCandidates] = useState(false)
+    const [showCandidateApplicationStatus,setShowCandidateApplicationStatus] = useState(false)
     const data = useSelector((state) => state.Userdata);
     const handleShowUser = () => {
         setShowUser(prev => !prev);
@@ -43,6 +49,18 @@ const Dashboard = () => {
     const handleAddJobs = () => {
         setAddJobs(prev => !prev)
     }
+
+    const handleAddCandidate = () => {
+        setAddCandidate(prev => !prev)
+    }
+    
+    const handleShowCandidates = () => {
+        setShowCandidates(prev => !prev)
+    }
+
+    const handleShowCandidateApplicationStatus = () => {
+        setShowCandidateApplicationStatus(prev => !prev)
+    }
     return (
         <>
             <h1>Welcome {data[0].name}</h1>
@@ -52,6 +70,9 @@ const Dashboard = () => {
             <Button className = 'ml-2' onClick={handleShowSkill}>Show Skill</Button>
             <Button className = 'ml-2' onClick={handleShowJobs}>Show Jobs</Button>
             <Button className = 'ml-2' onClick={handleAddJobs}>Add Jobs</Button>
+            <Button className = 'ml-2' onClick={handleAddCandidate}>Add Candidate</Button>
+            <Button className = 'ml-2' onClick={handleShowCandidates}>Show Candidate</Button>
+            <Button className = 'ml-2' onClick={handleShowCandidateApplicationStatus}>Show Candidate Application Status</Button>
             {showUser && <ShowUser />}
             {addUser && <SaveUser/>}
             {showUserRole && <DisplayUserRole/>}
@@ -59,6 +80,9 @@ const Dashboard = () => {
             {addSkill && <CreateSkill/>}
             {showJobs && <ShowJobs/>}
             {addJobs && <CreateJob/>}
+            {addCandidate && <CreateCandidate/>}
+            {showCandidates && <ShowCandidates/>}
+            {showCandidateApplicationStatus && <CandidateApplicationStatus/>}
         </>
     );
 };
