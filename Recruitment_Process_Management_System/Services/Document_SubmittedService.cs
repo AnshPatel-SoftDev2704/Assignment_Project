@@ -49,7 +49,7 @@ namespace Recruitment_Process_Management_System.Services
             var newCandidate = await _candidate_DetailsRepository.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
             var newDocument_type = await _document_TypeRepository.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             var newJob = await _jobsRepository.getJobById(document_SubmittedDTO.Job_id);
-            var newUser = await _userRepository.getUserById(document_SubmittedDTO.Approved_by);
+            List<User> users = (List<User>)await _userRepository.getAllUser();
 
             Document_Submitted document_Submitted = new Document_Submitted{
                 Candidate_id = document_SubmittedDTO.Candidate_id,
@@ -59,17 +59,29 @@ namespace Recruitment_Process_Management_System.Services
                 Document_Type_id = document_SubmittedDTO.Document_Type_id,
                 document_Type = newDocument_type,
                 Status = document_SubmittedDTO.Status,
-                Approved_by = document_SubmittedDTO.Approved_by,
-                user = newUser,
+                Approved_by = users[0].User_id,
                 Document_path = document_SubmittedDTO.Document_path,
-                Submitted_date = document_SubmittedDTO.Submitted_date,
-                Approved_date = document_SubmittedDTO.Approved_date,
+                Submitted_date = DateTime.Now,
+                Approved_date = DateTime.Now,
                 Created_at = DateTime.Now,
                 Updated_at = DateTime.Now
             };
 
             _document_SubmittedRepository.saveDocument_Submitted(document_Submitted);
             return document_Submitted;
+        }
+
+        public async Task<Document_Submitted> updateStatus(int Document_Submitted_id,bool Status,int Approved_by)
+        {
+            var newUser = await _userRepository.getUserById(Approved_by);
+            var existingDocument_Submitted = await _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
+            if(existingDocument_Submitted == null)
+            throw new Exception("This document is Not submitted by the Candidate");
+
+            existingDocument_Submitted.Status = Status;
+            existingDocument_Submitted.Approved_by = Approved_by;
+            existingDocument_Submitted.user = newUser;
+            return await _document_SubmittedRepository.updateDocument_Submitted(existingDocument_Submitted);
         }
 
         public async Task<Document_Submitted> updateDocument_Submitted(int Document_Submitted_id, Document_SubmittedDTO document_SubmittedDTO)
@@ -80,7 +92,7 @@ namespace Recruitment_Process_Management_System.Services
             var newUser = await _userRepository.getUserById(document_SubmittedDTO.Approved_by);
             var existingDocument_Submitted = await _document_SubmittedRepository.getDocument_SubmittedById(Document_Submitted_id);
             if(existingDocument_Submitted == null)
-            throw new Exception("This document is already submitted by the Candidate");
+            throw new Exception("This document is Not submitted by the Candidate");
 
             existingDocument_Submitted.Candidate_id = document_SubmittedDTO.Candidate_id;
             existingDocument_Submitted.candidate = newCandidate;
@@ -92,8 +104,8 @@ namespace Recruitment_Process_Management_System.Services
             existingDocument_Submitted.Approved_by = document_SubmittedDTO.Approved_by;
             existingDocument_Submitted.user = newUser;
             existingDocument_Submitted.Document_path = document_SubmittedDTO.Document_path;
-            existingDocument_Submitted.Submitted_date = document_SubmittedDTO.Submitted_date;
-            existingDocument_Submitted.Approved_date = document_SubmittedDTO.Approved_date;
+            if(existingDocument_Submitted.Status != document_SubmittedDTO.Status)
+            existingDocument_Submitted.Approved_date = DateTime.Now;
             existingDocument_Submitted.Updated_at = DateTime.Now;
 
             return await _document_SubmittedRepository.updateDocument_Submitted(existingDocument_Submitted);

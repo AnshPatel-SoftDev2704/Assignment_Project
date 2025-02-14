@@ -128,4 +128,67 @@ const deleteInterview = async (token,id) => {
     }
 }
 
-export {deleteInterview,getAllInterviewer,getAllInterview,saveInterview,saveInterviewer,getAllInterviewStatus,getAllInterviewType,updateInterview,}
+const saveFeedback = async (token,data) => {
+    try{
+        const response = await axios.post(`http://localhost:5195/api/Interview/SaveFeedback`,data,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const getAllFeedback = async (token) => {
+    try{
+        const response = await axios.get(`http://localhost:5195/api/Interview/GetAllFeedback`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const updateFeedback = async (token,id,data) => {
+    try{
+        const response = await axios.put(`http://localhost:5195/api/Interview/UpdateFeedback/${id}`,data,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+
+const deleteFeedback = async (token,id) => {
+    try{
+        const response = await axios.delete(`http://localhost:5195/api/Interview/DeleteFeedback/${id}`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        return response
+    }
+    catch(error)
+    {
+        return error;
+    }
+}
+export {deleteFeedback,updateFeedback,getAllFeedback,saveFeedback,deleteInterview,getAllInterviewer,getAllInterview,saveInterview,saveInterviewer,getAllInterviewStatus,getAllInterviewType,updateInterview,}

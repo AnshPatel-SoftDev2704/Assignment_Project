@@ -13,6 +13,9 @@ import ShowCandidates from './Candidate/showCandidates';
 import CandidateApplicationStatus from './Candidate/showCandidateApplicationStatus';
 import CreateInterview from './Interview/addInterview';
 import DisplayInterview from './Interview/showInterview';
+import AddFeedback from './Interview/saveFeedback';
+import DisplayFeedback from './Interview/showFeedback';
+import ShowDocuments from './Documents/showSubmittedDocument';
 const Dashboard = () => {
     const [showUser, setShowUser] = useState(false);
     const [addUser,setAddUser] = useState(false);
@@ -26,6 +29,9 @@ const Dashboard = () => {
     const [showCandidateApplicationStatus,setShowCandidateApplicationStatus] = useState(false)
     const [addInterview,setAddInterview] = useState(false)
     const [showInterview,setShowInterview] = useState(false)
+    const [addFeedback,setAddFeedback] = useState(false)
+    const [showFeedback,setShowFeedback] = useState(false)
+    const [showDocument,setShowDocument] = useState(false)
     const data = useSelector((state) => state.Userdata);
     const handleShowUser = () => {
         setShowUser(prev => !prev);
@@ -73,6 +79,18 @@ const Dashboard = () => {
     const handleShowInterview = () => {
         setShowInterview(prev => !prev)
     }
+
+    const handleAddFeedback = () =>{
+        setAddFeedback(prev => !prev)
+    }
+
+    const handleShowFeedback = () => {
+        setShowFeedback(prev => !prev)
+    }
+
+    const handleShowDocument = () => {
+        setShowDocument(prev => !prev)
+    }
     return (
         <>
             <h1>Welcome {data[0].name}</h1>
@@ -86,7 +104,10 @@ const Dashboard = () => {
             <Button className = 'ml-2' onClick={handleShowCandidates}>Show Candidate</Button>
             <Button className = 'ml-2' onClick={handleShowCandidateApplicationStatus}>Show Candidate Application Status</Button>
             <Button className = 'mt-2' onClick={handleAddInterview}>Add Interview</Button>
-            <Button className = 'mt-2' onClick={handleShowInterview}>Show Interview</Button>
+            <Button className = 'mt-2 ml-2' onClick={handleShowInterview}>Show Interview</Button>
+            <Button className = 'mt-2 ml-2' onClick={handleAddFeedback}>Add Feedback</Button>
+            <Button className = 'mt-2 ml-2' onClick={handleShowFeedback}>Show Feedback</Button>
+            <Button className = 'mt-2 ml-2' onClick={handleShowDocument}>Show Documents</Button>
             {showUser && <ShowUser />}
             {addUser && <SaveUser/>}
             {showUserRole && <DisplayUserRole/>}
@@ -99,6 +120,9 @@ const Dashboard = () => {
             {showCandidateApplicationStatus && <CandidateApplicationStatus/>}
             {addInterview && <CreateInterview/>}
             {showInterview && <DisplayInterview/>} 
+            {addFeedback && <AddFeedback/>}
+            {showFeedback && <DisplayFeedback/>}
+            {showDocument && <ShowDocuments/>}
         </>
     );
 };

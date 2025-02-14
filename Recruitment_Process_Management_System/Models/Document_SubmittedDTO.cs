@@ -8,6 +8,4 @@ public class Document_SubmittedDTO
     public bool Status{get;set;}
     public int Approved_by{get;set;}
     public string? Document_path{get;set;}
-    public DateTime Submitted_date{get;set;}
-    public DateTime Approved_date{get;set;}
 }

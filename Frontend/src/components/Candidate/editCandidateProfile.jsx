@@ -23,6 +23,7 @@ const CandidateProfile = () => {
   const [updatedSkills,setUpdatedSkills] = useState([])
   const [selectedSkillId, setSelectedSkillId] = useState("");
   const [skillExperience, setSkillExperience] = useState("");
+  const [cv,setCV] = useState()
   
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -44,7 +45,7 @@ const CandidateProfile = () => {
           candidate_password: candidate.data.candidate_password || '',
           candidate_Total_Work_Experience: candidate.data.candidate_Total_Work_Experience || '',
           phoneNo: candidate.data.phoneNo || '',
-          CV_Path: candidate.data.CV_Path || ''
+          CV_Path: candidate.data.CV_Path || 'anything'
         });
 
         const candidateSkills = await getAllCandidateSkill(data[0].token);
@@ -136,8 +137,8 @@ const CandidateProfile = () => {
     }
 
     try{
-        const response = updateCandidate(data[0].token,updatedProfile,data[0].user_id)
-        selectedSkills.forEach(skill => {
+        const response = updateCandidate(data[0].token,updatedProfile,data[0].user_id,cv)
+        updatedSkills?.forEach(skill => {
             const result = saveCandidateSkill(data[0].token,skill,data[0].user_id)
         });
     }
@@ -201,9 +202,9 @@ const CandidateProfile = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium">CV Path</label>
               <Input
+                type="file"
                 name="CV_Path"
-                value={profile.CV_Path}
-                onChange={handleProfileChange}
+                onChange={(e) => setCV(e.target.files[0])}
               />
             </div>
           </div>

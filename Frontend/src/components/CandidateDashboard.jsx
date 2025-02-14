@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CandidateProfile from './Candidate/editCandidateProfile';
 import JobListings from './Candidate/showJobsToCandidate';
+import DocumentForm from './Documents/saveDocument';
 const CandidateDashboard = () => {
     const [editCandidate, setEditCandidate] = useState(false);
     const [showOpenJobs,setShowOpenJobs] = useState(false)
@@ -21,6 +22,7 @@ const CandidateDashboard = () => {
             <Button onClick={handleShowOpenJobs}>Show Open Jobs</Button>
             {editCandidate && <CandidateProfile/>}
             {showOpenJobs && <JobListings/>}
+            <DocumentForm/>
         </>
     );
 };

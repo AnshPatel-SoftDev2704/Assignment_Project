@@ -52,8 +52,26 @@ namespace Recruitment_Process_Management_System.Controllers
             
         }
 
+        [HttpGet("GetFile")]
+        public ActionResult GetFile([FromQuery] string filepath)
+        {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return BadRequest("File path is required.");
+            }
+
+            var filePath = Path.Combine("YourFileDirectory", filepath);
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("File not found.");
+            }
+
+            var mimeType = "application/pdf";
+            return PhysicalFile(filePath, mimeType);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<Document_Submitted>> saveDocument_Submitted(Document_SubmittedDTO document_SubmittedDTO)
+        public async Task<ActionResult<Document_Submitted>> saveDocument_Submitted([FromForm] Document_SubmittedDTO document_SubmittedDTO,IFormFile file)
         {
             var newCandidate = await  _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
             if(newCandidate == null)
@@ -66,11 +84,18 @@ namespace Recruitment_Process_Management_System.Controllers
             var newDocument_Type = await _document_SubmittedService.getDocument_TypeById(document_SubmittedDTO.Document_Type_id);
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
-
-            var newUser = await _userService.getUserById(document_SubmittedDTO.Approved_by);
-            if(newUser == null)
-            return NotFound("User Not Found");
             
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads");
+            if (!Directory.Exists(uploadPath)) {
+                Directory.CreateDirectory(uploadPath);
+            }
+            var filePath = Path.Combine(uploadPath, file.FileName);
+            using (var target = new FileStream(filePath, FileMode.Create)) {
+                file.CopyTo(target);
+            }
+
+            document_SubmittedDTO.Document_path = filePath;
+
             try{
                 var response = await _document_SubmittedService.saveDocument_Submitted(document_SubmittedDTO);
                 return Ok(response);
@@ -79,7 +104,6 @@ namespace Recruitment_Process_Management_System.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
         }
 
         [HttpPut("{Document_Submitted_id}")]
@@ -113,6 +137,24 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest(ex.Message);
             }
             
+        }
+        
+
+        [HttpPut("UpdateStatus/{Document_Submitted_id}/{Approved_by}")]
+        public async Task<ActionResult<Document_Submitted>> updateStatus(int Document_Submitted_id,[FromBody] bool Status,int Approved_by)
+        {
+            try
+            {
+                var response = await _document_SubmittedService.updateStatus(Document_Submitted_id,Status,Approved_by);
+                if(response == null)
+                return NotFound("Submitted Document Not Found");
+                else
+                return Ok(response);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{Document_Submitted_id}")]
