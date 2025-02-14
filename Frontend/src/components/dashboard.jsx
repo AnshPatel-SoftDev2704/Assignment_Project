@@ -11,6 +11,8 @@ import CreateJob from './Jobs/saveJobs';
 import CreateCandidate from './Candidate/addCandidate';
 import ShowCandidates from './Candidate/showCandidates';
 import CandidateApplicationStatus from './Candidate/showCandidateApplicationStatus';
+import CreateInterview from './Interview/addInterview';
+import DisplayInterview from './Interview/showInterview';
 const Dashboard = () => {
     const [showUser, setShowUser] = useState(false);
     const [addUser,setAddUser] = useState(false);
@@ -22,6 +24,8 @@ const Dashboard = () => {
     const [addCandidate,setAddCandidate] = useState(false)
     const [showCandidates,setShowCandidates] = useState(false)
     const [showCandidateApplicationStatus,setShowCandidateApplicationStatus] = useState(false)
+    const [addInterview,setAddInterview] = useState(false)
+    const [showInterview,setShowInterview] = useState(false)
     const data = useSelector((state) => state.Userdata);
     const handleShowUser = () => {
         setShowUser(prev => !prev);
@@ -61,6 +65,14 @@ const Dashboard = () => {
     const handleShowCandidateApplicationStatus = () => {
         setShowCandidateApplicationStatus(prev => !prev)
     }
+
+    const handleAddInterview = () => {
+        setAddInterview(prev => !prev)
+    }
+
+    const handleShowInterview = () => {
+        setShowInterview(prev => !prev)
+    }
     return (
         <>
             <h1>Welcome {data[0].name}</h1>
@@ -73,6 +85,8 @@ const Dashboard = () => {
             <Button className = 'ml-2' onClick={handleAddCandidate}>Add Candidate</Button>
             <Button className = 'ml-2' onClick={handleShowCandidates}>Show Candidate</Button>
             <Button className = 'ml-2' onClick={handleShowCandidateApplicationStatus}>Show Candidate Application Status</Button>
+            <Button className = 'mt-2' onClick={handleAddInterview}>Add Interview</Button>
+            <Button className = 'mt-2' onClick={handleShowInterview}>Show Interview</Button>
             {showUser && <ShowUser />}
             {addUser && <SaveUser/>}
             {showUserRole && <DisplayUserRole/>}
@@ -83,6 +97,8 @@ const Dashboard = () => {
             {addCandidate && <CreateCandidate/>}
             {showCandidates && <ShowCandidates/>}
             {showCandidateApplicationStatus && <CandidateApplicationStatus/>}
+            {addInterview && <CreateInterview/>}
+            {showInterview && <DisplayInterview/>} 
         </>
     );
 };
