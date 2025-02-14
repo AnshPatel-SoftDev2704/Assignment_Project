@@ -24,5 +24,7 @@ namespace Recruitment_Process_Management_System.Services
         Task<Document_Type> updateDocument_Type(int Document_Type_id,Document_Type document_Type);
 
         Task<bool> deleteDocument_Type(int Document_Type_id);
+
+        Task<Document_Submitted> updateStatus(int Document_Submitted_id,bool Status,int Approved_by);
     }
 }

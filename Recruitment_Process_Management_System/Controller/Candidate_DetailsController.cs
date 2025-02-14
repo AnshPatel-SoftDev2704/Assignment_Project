@@ -65,8 +65,17 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPut("{Candidate_id}")]
-        public async Task<ActionResult<Candidate_Details>> updateCandidate_Details(int Candidate_id,Candidate_DetailsDTO candidate_DetailsDTO)
+        public async Task<ActionResult<Candidate_Details>> updateCandidate_Details(int Candidate_id,[FromForm] Candidate_DetailsDTO candidate_DetailsDTO,IFormFile file)
         {
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads");
+            if (!Directory.Exists(uploadPath)) {
+                Directory.CreateDirectory(uploadPath);
+            }
+            var filePath = Path.Combine(uploadPath, file.FileName);
+            using (var target = new FileStream(filePath, FileMode.Create)) {
+                file.CopyTo(target);
+            }
+            candidate_DetailsDTO.CV_Path = filePath;
             if(!this.ModelState.IsValid)
             return BadRequest(ModelState);
             try{
@@ -82,7 +91,24 @@ namespace Recruitment_Process_Management_System.Controllers
             }
             
         }
-        
+        [HttpGet("GetFile")]
+        public ActionResult GetFile([FromQuery] string filepath)
+        {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return BadRequest("File path is required.");
+            }
+
+            var filePath = Path.Combine("YourFileDirectory", filepath);
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound("File not found.");
+            }
+
+            var mimeType = "application/pdf";
+            return PhysicalFile(filePath, mimeType);
+        }
+
         [HttpDelete("{Candidate_id}")]
         public async Task<ActionResult<Candidate_Details>> deleteCandidate_Details(int Candidate_id)
         {
@@ -263,8 +289,8 @@ namespace Recruitment_Process_Management_System.Controllers
         [HttpPost("SaveCandidateApplicationStatus")]
         public async Task<ActionResult<Candidate_Application_Status>> saveCandidate_Application_Status(Candidate_Application_StatusDTO candidate_Application_StatusDTO)
         {
-            // if(!this.ModelState.IsValid)
-            // return BadRequest(ModelState);
+            if(!this.ModelState.IsValid)
+            return BadRequest(ModelState);
             Console.WriteLine(candidate_Application_StatusDTO.Candidate_id);
             try{
                 var response = await _candidate_DetailsService.saveCandidate_Application_Status(candidate_Application_StatusDTO);

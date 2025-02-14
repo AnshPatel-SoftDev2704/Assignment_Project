@@ -32,22 +32,34 @@ const getAllCandidateSkill = async (token) => {
     }
 }
 
-const updateCandidate = async(token,data,user_id) => {
-    try{
-        data.Role_id = 6;
-        const response = await axios.put(`http://localhost:5195/api/Candidate_Details/${user_id}`,data,{
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
-        return response
+const updateCandidate = async (token, data, user_id, file) => {
+    let formData = new FormData();
+    data.Role_id = 6;
+
+    Object.keys(data).forEach(key => {
+        formData.append(key, data[key]);
+    });
+
+    if (file) {
+        formData.append('file', file);
     }
-    catch(error)
-    {
+
+    try {
+        const response = await axios.put(
+            `http://localhost:5195/api/Candidate_Details/${user_id}`,
+            formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        return response;
+    } catch (error) {
+        console.error("Error updating candidate:", error);
         return error;
     }
-}
+};
 
 const getAllCandidates = async (token) => {
     try{
@@ -232,5 +244,20 @@ const saveCandidateApplicationStatus = async (token, candidate_id, job_id, appli
     }
 };
 
+const getFile = async (token, filepath) => {
+    try {
+        const response = await axios.get(`http://localhost:5195/api/Candidate_Details/GetFile`, {
+            params: { filepath },
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response;
+    } catch (error) {
+        return error;
+    }
+};
 
-export {saveCandidateApplicationStatus,updateApplicationStatus, deleteCandidate, getCandidateDetailById,getAllCandidateSkill,updateCandidate,saveCandidateSkill, getAllApplications, getAllApplicationStatuses, saveCandidateDetails, getAllCandidates};
+
+export {getFile,saveCandidateApplicationStatus,updateApplicationStatus, deleteCandidate, getCandidateDetailById,getAllCandidateSkill,updateCandidate,saveCandidateSkill, getAllApplications, getAllApplicationStatuses, saveCandidateDetails, getAllCandidates};
