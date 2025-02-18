@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { getCandidateDetailById, getAllCandidateSkill, updateCandidate, saveCandidateSkill } from '@/services/Candidate/api';
 import { getAllSkill } from '@/services/Skills/api';
+import { toast } from 'react-toastify';
 
 const CandidateProfile = () => {
   const [profile, setProfile] = useState({
@@ -138,13 +139,48 @@ const CandidateProfile = () => {
 
     try{
         const response = updateCandidate(data[0].token,updatedProfile,data[0].user_id,cv)
+
+        if(response.status === 403)
+        throw new Error("You Don't have Permission to Perform this Action")
+
         updatedSkills?.forEach(skill => {
+            console.log(data[0].user_id)
             const result = saveCandidateSkill(data[0].token,skill,data[0].user_id)
         });
+        setUpdatedSkills([])
     }
     catch(error)
     {
         console.error(error)
+        setUpdatedSkills([])
+    }
+  };
+
+  const validateProfile = () => {
+    if (!profile.candidate_name.trim()) {
+      toast.error("Name is required");
+      return false;
+    }
+    if (!profile.candidate_email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.candidate_email)) {
+      toast.error("Invalid email format");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!validateProfile()) return;
+
+      await handleSaveProfile();
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      toast.error(error.message || "Failed to update profile");
     }
   };
 
@@ -308,7 +344,7 @@ const CandidateProfile = () => {
       </Card>
 
       <div className="flex justify-end">
-        <Button onClick={handleSaveProfile} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700">
           Save Profile
         </Button>
       </div>

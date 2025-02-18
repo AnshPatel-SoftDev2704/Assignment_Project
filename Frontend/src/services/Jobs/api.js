@@ -162,6 +162,7 @@ const updateJob = async (token,data) => {
 
 const deleteJob = async (token,Job_id) => {
     try{
+        console.log(Job_id)
         const response = await axios.delete(`http://localhost:5195/api/Jobs/${Job_id}`,{
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -7,7 +7,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // [Authorize(Roles ="Admin,HR")]
+    [Authorize(Roles ="Admin,HR,Interviewer")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -44,7 +44,8 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+            
+        [Authorize(Roles ="Admin,HR,Interviewer")]
         [HttpPost("saveUser")]
         public async Task<ActionResult<User>> saveUserAsync(UserDTO userDTO)
         {
@@ -88,6 +89,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("{username}")]
         public async Task<ActionResult<User>> getUser(string username)
         {
@@ -116,7 +118,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
 
-        [HttpGet("/getUserRolesById/{UserRolesId}")]
+        [HttpGet("getUserRolesById/{UserRolesId}")]
         public async Task<ActionResult<IEnumerable<UserRoles>>> getUserRoleById(int UserRolesId)
         {
             try{

@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using System.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -7,6 +9,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,HR,Candidate,Reviewer,Interviewer")]
     public class Candidate_DetailsController : ControllerBase
     {
         private readonly ICandidate_DetailsService _candidate_DetailsService;
@@ -65,9 +68,10 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPut("{Candidate_id}")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Candidate_Details>> updateCandidate_Details(int Candidate_id,[FromForm] Candidate_DetailsDTO candidate_DetailsDTO,IFormFile file)
         {
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads");
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\uploads");
             if (!Directory.Exists(uploadPath)) {
                 Directory.CreateDirectory(uploadPath);
             }
@@ -99,14 +103,13 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest("File path is required.");
             }
 
-            var filePath = Path.Combine("YourFileDirectory", filepath);
-            if (!System.IO.File.Exists(filePath))
+            if (!System.IO.File.Exists(filepath))
             {
                 return NotFound("File not found.");
             }
 
             var mimeType = "application/pdf";
-            return PhysicalFile(filePath, mimeType);
+            return PhysicalFile(filepath, mimeType);
         }
 
         [HttpDelete("{Candidate_id}")]
@@ -156,6 +159,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost("SaveApplicationStatus")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Application_Status>> saveApplication_Status(Application_Status application_Status)
         {
             if(!this.ModelState.IsValid)
@@ -174,6 +178,7 @@ namespace Recruitment_Process_Management_System.Controllers
             
         }
         [HttpGet("GetAllCandidateSkills")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<IEnumerable<Candidate_Skills>>> getAllCandidate_Skills()
         {
             try{
@@ -204,8 +209,10 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost("SaveCandidateSkill")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Candidate_Skills>> saveCandidate_Skill(Candidate_SkillsDTO candidate_SkillsDTO)
         {
+            Console.WriteLine(candidate_SkillsDTO.Candidate_id);
             if(!this.ModelState.IsValid)
             return BadRequest(ModelState);
             try{
@@ -222,6 +229,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPut("UpdateCandiateSkill/{Candidate_Skill_id}")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Candidate_Skills>> updateCandidate_Skill(int Candidate_Skill_id,Candidate_SkillsDTO candidate_SkillsDTO)
         {
             if(!this.ModelState.IsValid)
@@ -287,6 +295,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost("SaveCandidateApplicationStatus")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Candidate_Application_Status>> saveCandidate_Application_Status(Candidate_Application_StatusDTO candidate_Application_StatusDTO)
         {
             if(!this.ModelState.IsValid)
@@ -341,7 +350,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
             
         }
-
+        [Authorize(Roles = "Candidate")]
         [HttpGet("getCandidateByName/{Name}")]
         public async Task<ActionResult<Candidate_Details>> getCandidate_DetailsByName(string Name)
         {

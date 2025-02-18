@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useSelector, useDispatch } from 'react-redux';
 import { saveSkill, getAllSkill } from '@/services/Skills/api';
 import { getSkill } from '@/store/Skills/actions';
-
+import { toast } from 'react-toastify';
 const CreateSkill = () => {
     const [skillData, setSkillData] = useState({
         skill_name: '',
@@ -26,15 +26,35 @@ const CreateSkill = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (!skillData.skill_name.trim() || !skillData.skill_description.trim()) {
+                toast.error("Both fields are required", {
+                    position: "top-right",
+                    autoClose: 3000
+                });
+                return;
+            }
+
             await saveSkill(data[0].token, skillData);
             const result = await getAllSkill(data[0].token);
+
+            if(result.status === 403)
+                throw new Error("You Don't have Permission to Perform this Action")
+
             dispatch(getSkill(result.data));
             setSkillData({
                 skill_name: '',
                 skill_description: ''
             });
+            toast.success("Skill created successfully", {
+                position: "top-right",
+                autoClose: 3000
+            });
         } catch (error) {
             console.error("Error saving skill:", error);
+            toast.error("Failed to create skill", {
+                position: "top-right",
+                autoClose: 3000
+            });
         }
     };
 

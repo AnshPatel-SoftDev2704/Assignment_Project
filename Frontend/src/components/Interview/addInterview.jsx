@@ -19,6 +19,7 @@ import { getAllInterviewType } from '@/services/Interview/api';
 import { getAllInterviewStatus } from '@/services/Interview/api';
 import { getAllUser } from '@/services/Users/api';
 import { getAllApplications } from '@/services/Candidate/api';
+import { toast } from 'react-toastify';
 
 const CreateInterview = () => {
     const [interviewData, setInterviewData] = useState({
@@ -48,13 +49,17 @@ const CreateInterview = () => {
                 const statusResponse = await getAllInterviewStatus(data[0].token);
                 const usersResponse = await getAllUser(data[0].token);
                 const applications = await getAllApplications(data[0].token)
+
+                if(typeResponse.status === 403 || usersResponse.status === 403 || applications.status === 403)
+                    throw new Error("You are not allowed to perform this Action")
+
+                let response = applications.data.filter(app => app.application_Status_id === 2)
                 setInterviewTypes(typeResponse.data);
                 setInterviewStatuses(statusResponse.data);
                 setUsers(usersResponse.data);
-                setApplications(applications.data)
-                console.log(applications.data)
+                setApplications(response)
             } catch (error) {
-                console.error("Error fetching data:", error);
+                toast.error(error.message || "Failed to Fetch Details");
             }
         };
         fetchData();
@@ -88,7 +93,6 @@ const CreateInterview = () => {
             interviewData.interview_Type_id = parseInt(interviewData.interview_Type_id)
             interviewData.number_of_round = parseInt(interviewData.number_of_round)
             const response = await saveInterview(data[0].token,interviewData)
-            console.log(response)
             assignedInterviewers.forEach(async interviewer => {
                 const result = await saveInterviewer(data[0].token,response.data.interview_id,interviewer.user_id)
             });

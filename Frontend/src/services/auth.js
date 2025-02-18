@@ -12,7 +12,6 @@ const auth = async (username, password) => {
             }
         );
         const token = loginResponse.data;
-        console.log(token)
         try {
             const userResponse = await axios.get(
                 `http://localhost:5195/api/User/${username}`,

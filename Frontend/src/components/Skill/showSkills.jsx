@@ -19,18 +19,18 @@ import DeleteSkill from './deleteSkills';
 const DisplaySkill = () => {
     const dispatch = useDispatch();
     const data = useSelector((state) => state.Userdata);
-    const skills = useSelector((state) => state.Skills);
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedSkill, setSelectedSkill] = useState(null);
+    const [skills,setSkills] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await getAllSkill(data[0].token);
-            dispatch(getSkill(response.data));
+            setSkills(response.data)
         };
         fetchData();
-    }, []);
+    }, [showDeleteDialog,showEditDialog,setShowDeleteDialog,setShowEditDialog]);
 
     const handleEdit = (skill) => {
         setSelectedSkill(skill);
@@ -55,7 +55,7 @@ const DisplaySkill = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {skills[0] && skills[0].map(skill => (
+                    {skills && skills.map(skill => (
                         <TableRow key={skill.skill_id}>
                             <TableCell className="text-center">{skill.skill_name}</TableCell>
                             <TableCell className="text-center">{skill.skill_description}</TableCell>

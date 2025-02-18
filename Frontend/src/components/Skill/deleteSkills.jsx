@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteSkill, getAllSkill } from '@/services/Skills/api';
 import { getSkill } from '@/store/Skills/actions';
+import { toast } from 'react-toastify';
 
 const DeleteSkill = ({ showDeleteDialog, setShowDeleteDialog, deleteSkills }) => {
     const data = useSelector((state) => state.Userdata);
@@ -17,12 +18,31 @@ const DeleteSkill = ({ showDeleteDialog, setShowDeleteDialog, deleteSkills }) =>
 
     const handleDelete = async () => {
         try {
+            if (!deleteSkills?.skill_id) {
+                toast.error("Invalid skill selection", {
+                    position: "top-right",
+                    autoClose: 3000
+                });
+                return;
+            }
+
             await deleteSkill(data[0].token, deleteSkills.skill_id);
             const result = await getAllSkill(data[0].token);
+            
+            if(result.status === 403)
+                throw new Error("You Don't have Permission to Perform this Action")
+
             dispatch(getSkill(result.data));
+            toast.success("Skill deleted successfully", {
+                position: "top-right",
+                autoClose: 3000
+            });
             setShowDeleteDialog(false);
-        } catch (err) {
-            console.error('Error deleting skill:', err);
+        } catch (error) {
+            toast.error("Failed to delete skill", {
+                position: "top-right",
+                autoClose: 3000
+            });
         }
     };
 

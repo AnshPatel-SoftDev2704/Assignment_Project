@@ -20,7 +20,6 @@ import {
       try {
         await deleteUser(data[0].token, deleteUserData.user_id);
         const result = await getAllUser(data[0].token);
-        dispatch(getUser(result.data));
         setShowDeleteDialog(false);
       } catch (err) {
         console.error('Error deleting user:', err);

@@ -9,10 +9,19 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogDescription,
+  } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Eye } from "lucide-react";
 import UpdateInterview from './updateInterview';
 import DeleteInterview from './deleteInterview';
+import { toast } from 'react-toastify';
 
 const DisplayInterview = () => {
     const dispatch = useDispatch();
@@ -21,14 +30,25 @@ const DisplayInterview = () => {
     const [interviewers,setInterviewers] = useState([])
     const [showEditDialog, setShowEditDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showDetailsDialog,setShowDetailsDialog] = useState(false)
     const [selectedInterview, setSelectedInterview] = useState(null);
-
+    const [selectedInterviewer,setSelectedInterviewer] = useState([])
     useEffect(() => {
         const fetchData = async () => {
+            try{
             const response = await getAllInterview(data[0].token);
             const result = await getAllInterviewer(data[0].token)
+
+            if(response.status === 403 || result.status === 403)
+                throw new Error("You are Not Allowed to Perform this Action")
+
             setInterviews(response.data)
             setInterviewers(result.data)
+            }
+            catch(error)
+            {
+                toast.error(error.message || "Failed to Fetch Details");
+            }
         };
         fetchData();
     }, [showEditDialog,setShowEditDialog,showDeleteDialog,setShowDeleteDialog]);
@@ -41,7 +61,17 @@ const DisplayInterview = () => {
     const handleDelete = (interview) => {
         setSelectedInterview(interview);
         setShowDeleteDialog(true);
-    };
+    }; 
+
+    const handleShowDetails = (interview) => {
+        setSelectedInterview(interview)
+        const response = interviewers.filter(interviewer => interviewer.interview_id === interview.interview_id)
+        setSelectedInterviewer(response)
+        console.log(interview)
+        console.log(response)
+        setShowDetailsDialog(true)
+    }
+
 
     return (
         <div className="rounded-md border">
@@ -80,6 +110,14 @@ const DisplayInterview = () => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
+                                    className="h-8 w-8 mr-2"
+                                    onClick={() => handleShowDetails(interview)}
+                                >
+                                    <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
                                     onClick={() => handleEdit(interview)}
                                 >
                                     <Pencil className="h-4 w-4" />
@@ -97,6 +135,31 @@ const DisplayInterview = () => {
                     ))}
                 </TableBody>
             </Table>
+            
+            {/* <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+                <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                    <DialogTitle>User Details</DialogTitle>
+                </DialogHeader>
+                {selectedInterview && selectedInterviewer && (
+                    <div className='space-y-6'>
+                        <div className='grid grid-cols-2 gap-6'>
+                            <div className='space-y-4'>
+                                <div>
+                                    <h3 className='text-lg font-semibold mb-3'>Interview Information</h3>
+                                    <div className='space-y-2'>
+                                        <p><span className='font-medium'>Name: </span>{selectedUser.name}</p>
+                                        <p><span className='font-medium'>Email: </span>{selectedUser.email}</p>
+                                        <p><span className='font-medium'>Contact: </span>{selectedUser.contact}</p>
+                                        <p><span className='font-medium'>Id: </span>{selectedUser.user_id}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                </DialogContent>
+            </Dialog> */}
 
             {showEditDialog && (
                 <UpdateInterview 

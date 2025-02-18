@@ -24,6 +24,7 @@ namespace Recruitment_Process_Management_System.Services
             if(response == null)
             {
                 candidate = await _candidate_DetailsRepository.GetCandidate_DetailsByName(Name);
+                Console.WriteLine(candidate.Candidate_password);
                 if(Password == candidate.Candidate_password)
                 {
                     return GenerateCandidateJwtToken(Name,Password,"Candidate");

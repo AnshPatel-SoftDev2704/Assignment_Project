@@ -8,7 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize(Roles = "HR,Interviewer")]
+    [Authorize(Roles = "HR,Interviewer,Reviewer,Admin,Recruiter,Candidate")]
     public class SkillController : ControllerBase
     {
         private readonly ISkillService _skillService;
@@ -19,6 +19,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "HR,Interviewer,Reviewer,Admin,Recruiter,Candidate")]
         public async Task<ActionResult<IEnumerable<Skill>>> getAllSkill()
         {
             try{
@@ -79,7 +80,23 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetFile")]
+        public ActionResult GetFile([FromQuery] string filepath)
+        {
+            Console.WriteLine(filepath);
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return BadRequest("File path is required.");
+            }
 
+            if (!System.IO.File.Exists(filepath))
+            {
+                return NotFound("File not found.");
+            }
+
+            var mimeType = "application/pdf";
+            return PhysicalFile(filepath, mimeType);
+        }
         [HttpDelete("{Skill_id}")]
         public async Task<ActionResult<bool>> deleteSkill(int Skill_id)
         {

@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using System.Web;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -7,6 +9,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,HR,Candidate")]
     public class Document_SubmittedController : ControllerBase
     {
         private readonly IDocument_SubmittedService? _document_SubmittedService;
@@ -60,17 +63,17 @@ namespace Recruitment_Process_Management_System.Controllers
                 return BadRequest("File path is required.");
             }
 
-            var filePath = Path.Combine("YourFileDirectory", filepath);
-            if (!System.IO.File.Exists(filePath))
+            if (!System.IO.File.Exists(filepath))
             {
                 return NotFound("File not found.");
             }
 
             var mimeType = "application/pdf";
-            return PhysicalFile(filePath, mimeType);
+            return PhysicalFile(filepath, mimeType);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<Document_Submitted>> saveDocument_Submitted([FromForm] Document_SubmittedDTO document_SubmittedDTO,IFormFile file)
         {
             var newCandidate = await  _candidate_DetailsService.getCandidate_DetailsById(document_SubmittedDTO.Candidate_id);
@@ -85,7 +88,7 @@ namespace Recruitment_Process_Management_System.Controllers
             if(newDocument_Type == null)
             return NotFound("Document Type Not Found");
             
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/uploads");
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot\\uploads");
             if (!Directory.Exists(uploadPath)) {
                 Directory.CreateDirectory(uploadPath);
             }
@@ -174,6 +177,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet("GetAllDocumentType")]
+        [Authorize(Roles = "Admin,HR,Candidate")]
         public async Task<ActionResult<IEnumerable<Document_Type>>> getAllDocument_Type()
         {
             try{

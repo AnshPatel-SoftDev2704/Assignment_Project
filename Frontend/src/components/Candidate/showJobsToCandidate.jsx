@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getAllJobs } from '@/services/Jobs/api';
 import { useSelector } from 'react-redux';
 import { saveCandidateApplicationStatus } from '@/services/Candidate/api';
+import { toast } from 'react-toastify';
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([]);
@@ -14,27 +15,26 @@ const JobListings = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const jobs = await getAllJobs(data[0].token)
-        setJobs(jobs.data);
-        setLoading(false);
+        setLoading(true);
+        const response = await getAllJobs(data[0].token);
+        setJobs(response.data);
       } catch (error) {
-        console.error('Error fetching jobs:', error);
+        toast.error("Failed to fetch job listings");
+      } finally {
         setLoading(false);
       }
     };
-
     fetchJobs();
   }, []);
 
   const handleApply = async (jobId) => {
     try {
-        const candidate_id =  data[0].user_id
-        const todayDate = new Date().toISOString();
-        const application_Status_id = 6;
-        const response = await saveCandidateApplicationStatus(data[0].token,candidate_id,jobId,application_Status_id,todayDate)
+      await saveCandidateApplicationStatus(data[0].token, data[0].user_id, jobId, 6, new Date().toISOString());
+      toast.success("Application submitted successfully");
+      const response = await getAllJobs(data[0].token);
+      setJobs(response.data);
     } catch (error) {
-      console.error('Error applying for job:', error);
-      alert('Failed to apply for the job. Please try again.');
+      toast.error(error.message || "Failed to submit application");
     }
   };
 

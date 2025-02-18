@@ -21,6 +21,7 @@ import { X } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllInterview,saveFeedback } from '@/services/Interview/api';
 import { getAllUser } from '@/services/Users/api';
+import { toast } from 'react-toastify';
 
 const AddFeedback = () => {
     const [feedbackData, setFeedbackData] = useState({
@@ -42,11 +43,13 @@ const AddFeedback = () => {
             try {
                 const interviewResponse = await getAllInterview(data[0].token);
                 const userResponse = await getAllUser(data[0].token);
+                if(interviewResponse.status === 403 ||userResponse.status === 403)
+                    throw new Error("You are Not Allowed to Perform this Action")
                 setInterviews(interviewResponse.data);
                 setUsers(userResponse.data);
                 console.log(interviewResponse.data)
             } catch (error) {
-                console.error("Error fetching data:", error);
+                toast.error(error.message || "Failed to Fetch Details");
             }
         };
         fetchData();
@@ -68,6 +71,8 @@ const AddFeedback = () => {
             feedbackData.rating = parseInt(feedbackData.rating)
             feedbackData.submitted_date = new Date().toISOString();
             const result = await saveFeedback(data[0].token, feedbackData);
+            if(result.status === 403)
+                throw new Error("You are Not allowed to Perform this action")
             setFeedbackData({
                 interview_id: '',
                 user_id: '',
@@ -77,7 +82,7 @@ const AddFeedback = () => {
                 submitted_date: '',
             });
         } catch (error) {
-            console.error("Error saving feedback:", error);
+            toast.error(error.message || "Failed to Fetch Details");
         }
     };
 
