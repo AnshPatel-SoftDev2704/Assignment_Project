@@ -12,6 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { updateSkill, getAllSkill } from '@/services/Skills/api';
 import { getSkill } from '@/store/Skills/actions';
+import { toast, ToastContainer } from 'react-toastify';
 
 const UpdateSkill = ({ showEditDialog, setShowEditDialog, editSkill }) => {
     const data = useSelector((state) => state.Userdata);
@@ -32,12 +33,32 @@ const UpdateSkill = ({ showEditDialog, setShowEditDialog, editSkill }) => {
 
     const handleUpdate = async () => {
         try {
-            await updateSkill(data[0].token, editFormData);
+            if (!editFormData.skill_name.trim() || !editFormData.skill_description.trim()) {
+                toast.error("Both fields are required", {
+                    position: "top-right",
+                    autoClose: 3000
+                });
+                return;
+            }
+
+            const response = await updateSkill(data[0].token, editFormData);
+            
+            if(response.status === 403)
+                throw new Error("You Don't have Permission to Perform this Action")
+            
             const result = await getAllSkill(data[0].token);
             dispatch(getSkill(result.data));
             setShowEditDialog(false);
+            toast.success("Skill updated successfully", {
+                position: "top-right",
+                autoClose: 3000
+            });
         } catch (err) {
             console.error('Error updating skill:', err);
+            toast.error("Failed to update skill", {
+                position: "top-right",
+                autoClose: 3000
+            });
         }
     };
 
@@ -76,6 +97,7 @@ const UpdateSkill = ({ showEditDialog, setShowEditDialog, editSkill }) => {
                         Save Changes
                     </Button>
                 </DialogFooter>
+            <ToastContainer/>
             </DialogContent>
         </Dialog>
     );

@@ -1,29 +1,25 @@
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import CandidateProfile from './Candidate/editCandidateProfile';
-import JobListings from './Candidate/showJobsToCandidate';
-import DocumentForm from './Documents/saveDocument';
-const CandidateDashboard = () => {
-    const [editCandidate, setEditCandidate] = useState(false);
-    const [showOpenJobs,setShowOpenJobs] = useState(false)
-    const data = useSelector((state) => state.Userdata);
-    const handleEditCandidate = () => {
-        setEditCandidate(prev => !prev);
-    };
 
-    const handleShowOpenJobs = () =>{
-        setShowOpenJobs(prev => !prev)
-    }
+import { useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import NotificationComponent from './NotificationComponent';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+const CandidateDashboard = () => {
+    const data = useSelector((state) => state.Userdata);
+
     return (
-        <>
-            <h1>Welcome {data[0].name}</h1>
-            <Button onClick={handleEditCandidate}>Edit Profile</Button>
-            <Button onClick={handleShowOpenJobs}>Show Open Jobs</Button>
-            {editCandidate && <CandidateProfile/>}
-            {showOpenJobs && <JobListings/>}
-            <DocumentForm/>
-        </>
+        <div className="flex">
+            <Sidebar isAdmin={false} />
+            <div className="ml-64 p-8 w-full">
+                <div className="flex justify-between items-center">
+                    <h1 className="text-3xl font-bold mb-6">Welcome {data?.[0]?.name || 'User'}</h1>
+                    <NotificationComponent />
+                </div>
+                <Outlet />
+            </div>
+            <ToastContainer position="top-right" autoClose={3000} />
+        </div>
     );
 };
 

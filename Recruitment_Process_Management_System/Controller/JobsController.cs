@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -7,6 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,HR,Candidate,Reviewer,Recruiter,Interviewer")]
     public class JobsController : ControllerBase
     {
         private readonly IJobsSerivce _jobsSerivce;
@@ -17,6 +19,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,HR,Candidate,Reviewer,Recruiter,Interviewer")]
         public async Task<ActionResult<IEnumerable<Jobs>>> getAllJobs()
         {
             try{
@@ -187,7 +190,6 @@ namespace Recruitment_Process_Management_System.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
         }
 
         [HttpPut("updateRequiredJobSkill/{Required_Job_Skill_id}")]

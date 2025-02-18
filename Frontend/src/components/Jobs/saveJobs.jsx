@@ -15,6 +15,7 @@ import { X } from "lucide-react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllJobStatus, saveJobs, savePreferredSkill, saveRequiredSkill } from '@/services/Jobs/api';
 import { getAllSkill } from '@/services/Skills/api';
+import { toast } from 'react-toastify';
 
 const CreateJob = () => {
   const data = useSelector((state) => state.Userdata);
@@ -71,16 +72,42 @@ const CreateJob = () => {
     setPreferred_Skills(preferred_skills.filter(skill => skill.skill_id !== skillId));
   };
 
+  const validateJobData = () => {
+    if (!jobData.Job_title.trim()) {
+      toast.error("Job title is required");
+      return false;
+    }
+    if (!jobData.Job_description.trim()) {
+      toast.error("Job description is required");
+      return false;
+    }
+    if (!jobData.Job_Status_id) {
+      toast.error("Job status is required");
+      return false;
+    } 
+    if (!jobData.Created_by) {
+      toast.error("Created by is required");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await saveJobs(data[0].token,jobData);
+      if (!validateJobData()) return;
+
+      const result = await saveJobs(data[0].token, jobData);
+
+      if(result.status === 403)
+        throw new Error("You Don't have Permission to Perform this Action")
+      
       required_skills.forEach(skill => {
-        const response = saveRequiredSkill(data[0].token,result.data.job_id,skill.skill_id)
+        const response = saveRequiredSkill(data[0].token, result.data.job_id, skill.skill_id)
       });
 
       preferred_skills.forEach(skill => {
-        const response = savePreferredSkill(data[0].token,result.data.job_id,skill.skill_id)
+        const response = savePreferredSkill(data[0].token, result.data.job_id, skill.skill_id)
       });
       setJobData({
         Job_title: '',
@@ -92,8 +119,9 @@ const CreateJob = () => {
       });
       setRequired_Skills([])
       setPreferred_Skills([])
+      toast.success("Job posted successfully");
     } catch (error) {
-      console.error("Error creating job:", error);
+      toast.error(error.message || "Failed to create job posting");
     }
   };
 

@@ -15,6 +15,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { getAllRole, getAllUser, saveUser, saveUserRoles } from '@/services/Users/api';
 import { getRole } from '@/store/Roles/actions';
 import { getUser } from '@/store/Users/actions';
+import { toast } from 'react-toastify';
 
 const SaveUser = () => {
     const [userData, setUserData] = useState({
@@ -30,9 +31,17 @@ const SaveUser = () => {
 
     useEffect(()=>{
         const fetchData = async () => {
-            const response = await getAllRole(user.token)
+            try{
+            const response = await getAllRole(user[0].token)
+            if(response.status === 403)
+                throw new Error("You are Not Allowed to Peform this Action");
             setRoles(response.data)
             dispatch(getRole(response.data))
+            }
+            catch(error)
+            {
+                toast.error(error.message || "Failed to Fetch Details");
+            }
         }
         fetchData()
     },[])
@@ -54,17 +63,22 @@ const SaveUser = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const response = await saveUser(user.token,userData)
-            const result = await getAllUser(user.token)
+            console.log(user)
+            const response = await saveUser(user[0].token,userData)
+            const result = await getAllUser(user[0].token)
+            
+            if(result.status === 403)
+                throw new Error("You are Not Allowed to Perform this Action")
+
             dispatch(getUser(result.data))
             const User_id = response.data.user_id
             selectedRoles.forEach(role => {
-                const response = saveUserRoles(user.token,User_id,role.role_id)
+                const response = saveUserRoles(user[0].token,User_id,role.role_id)
             });
         }        
         catch(error)
         {
-            console.error('Error Saving User',error)
+            toast.error(error.message || "Failed to Fetch Details");
         }
     };
 

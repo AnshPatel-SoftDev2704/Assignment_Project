@@ -65,25 +65,14 @@ const getAllDocumentSubmitted = async (token) => {
     }
     catch(error)
     {
-        if (error.response) {
-            console.error('Server Error:', {
-                status: error.response.status,
-                data: error.response.data
-            });
-            throw new Error(`Server error: ${error.response.data}`);
-        } else if (error.request) {
-            console.error('Network Error:', error.request);
-            throw new Error('Network error: Unable to reach the server');
-        } else {
-            console.error('Request Error:', error.message);
-            throw error;
-        }
+        return error
     }
 }
 
-const updateSubmittedDocument = async (token,id,Status,Approved_by) => {
+const updateSubmittedDocument = async (token,id,data) => {
+    console.log(data)
     try{
-        const response = await axios.put(`http://localhost:5195/api/Document_Submitted/UpdateStatus/${id}/${Approved_by}`,Status,{
+        const response = await axios.put(`http://localhost:5195/api/Document_Submitted/UpdateStatus/${id}/${data.Approved_by}`,data.Status,{
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'

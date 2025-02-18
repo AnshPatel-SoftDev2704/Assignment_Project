@@ -15,7 +15,6 @@ const DeleteFeedback = ({ showDeleteDialog, setShowDeleteDialog, deleteFeedbacks
 
     const handleDelete = async () => {
         try {
-            console.log(deleteFeedbacks)
             await deleteFeedback(data[0].token, deleteFeedbacks.feedback_id);
             setShowDeleteDialog(false);
         } catch (err) {

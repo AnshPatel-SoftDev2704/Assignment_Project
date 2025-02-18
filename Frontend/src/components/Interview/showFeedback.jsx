@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import UpdateFeedback from './updateFeedback';
 import DeleteFeedback from './deleteFeedback';
+import { toast } from 'react-toastify';
 
 const DisplayFeedback = () => {
     const data = useSelector((state) => state.Userdata);
@@ -23,9 +24,18 @@ const DisplayFeedback = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            try{
             const response = await getAllFeedback(data[0].token);
-            console.log(response.data)
+            if(response.status === 403)
+                throw new Error("You are not allowed to Perform this Action")
+            else if(response.status !== 200)
+                throw new Error()
             setFeedbacks(response.data)
+            }
+            catch(error)
+            {
+                toast.error(error.message || "Failed to Fetch Details");
+            }
         };
         fetchData();
     }, [showEditDialog,setShowDeleteDialog,showDeleteDialog,setShowEditDialog]);

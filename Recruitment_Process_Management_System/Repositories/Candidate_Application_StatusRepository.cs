@@ -35,7 +35,7 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public async Task<Candidate_Application_Status> saveCandidate_Application_Status(Candidate_Application_Status candidate_Application_Status)
         {
-            var response = _context.Candidate_Application_Status.FirstOrDefault(cas => cas.Candidate_id == candidate_Application_Status.Candidate_id);
+            var response = _context.Candidate_Application_Status.FirstOrDefault(cas => cas.Candidate_id == candidate_Application_Status.Candidate_id && cas.Job_id == candidate_Application_Status.Job_id);
             if(response != null)
             throw new Exception("Candidate Application is Already Present");
 

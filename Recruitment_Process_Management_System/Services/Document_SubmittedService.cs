@@ -81,6 +81,7 @@ namespace Recruitment_Process_Management_System.Services
             existingDocument_Submitted.Status = Status;
             existingDocument_Submitted.Approved_by = Approved_by;
             existingDocument_Submitted.user = newUser;
+            existingDocument_Submitted.Updated_at = DateTime.Now;
             return await _document_SubmittedRepository.updateDocument_Submitted(existingDocument_Submitted);
         }
 

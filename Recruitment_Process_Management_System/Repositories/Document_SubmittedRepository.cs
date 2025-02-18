@@ -22,7 +22,7 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public async Task<IEnumerable<Document_Submitted>> getAllDocument_Submitted()
         {
-            var responses = _context.Document_Submitted.Include(ds => ds.candidate).Include(ds => ds.candidate.role).Include(ds => ds.job).Include(ds => ds.job.job_Status).Include(ds => ds.job.user).Include(ds => ds.user).ToList();
+            var responses = _context.Document_Submitted.Include(ds => ds.candidate).Include(ds=>ds.document_Type).Include(ds => ds.candidate.role).Include(ds => ds.job).Include(ds => ds.job.job_Status).Include(ds => ds.job.user).Include(ds => ds.user).ToList();
             return responses;
         }
 

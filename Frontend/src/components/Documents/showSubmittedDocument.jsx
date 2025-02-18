@@ -1,161 +1,248 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Save, Trash2 } from "lucide-react";
-import { getAllCandidates, getFile, updateApplicationStatus } from '@/services/Candidate/api';
-import { getAllDocumentSubmitted, updateSubmittedDocument } from '@/services/Document/api';
+import { getAllDocumentSubmitted, getFile, updateSubmittedDocument } from '@/services/Document/api';
+import { toast } from 'react-toastify';
+import { Check, X } from "lucide-react";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import DeleteDocument from './deleteDocument';
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const ShowDocuments = () => {
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [documents, setDocuments] = useState([]);
-    const [deleteDocument,setDeleteDocument] = useState()
-    const [updatedDocumentStatus, setUpdatedDocumentStatus] = useState([])
+    const [loading, setLoading] = useState(true);
     const data = useSelector((state) => state.Userdata);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await getAllDocumentSubmitted(data[0].token)
-            setDocuments(response.data)
-            console.log(response.data)
-        };
-        fetchData();
-    }, [showDeleteDialog, setShowDeleteDialog]);
+        validateAndFetchDocuments();
+    }, []);
 
-    const handleDelete = (document) => {
-        setShowDeleteDialog(true);
-        setDeleteDocument(document);
+    const validateToken = () => {
+        if (!data || !data[0]?.token) {
+            toast.error("Authentication token is missing", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+            });
+            return false;
+        }
+        return true;
+    };
+
+    const validateAndFetchDocuments = async () => {
+        if (!validateToken()) return;
+        await fetchDocuments();
+    };
+
+    const fetchDocuments = async () => {
+        try {
+            setLoading(true);
+            const response = await getAllDocumentSubmitted(data[0].token);
+            if (!response.data || response.data.length === 0) {
+                throw (response)
+            }
+            setDocuments(response.data);
+        } catch (error) {
+            if(error.status === 403)
+            {
+                toast.error("You don't have Access for this Action", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                });
+            }
+            else
+            {
+                toast.error(error.message || "Failed to fetch documents", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleOpenFile = async (filepath) => {
         try {
+            if (!validateToken()) return;
+
+            if (!filepath) {
+                toast.error("Document path is missing", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                });
+                return;
+            }
+
             const response = await getFile(data[0].token, filepath);
             if (response.status === 200) {
-                window.open(`http://localhost:5195/api/Document_Submitted/GetFile?filepath=${encodeURIComponent(filepath)}`, '_blank');
+                window.open(`http://localhost:5195/api/Document_Submitted/GetFile?filepath=${encodeURI(filepath)}`, '_blank');
+            } else {
+                throw new Error("Failed to retrieve document");
             }
         } catch (error) {
-            console.error(error);
+            toast.error(error.message || "Failed to open document", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+            });
         }
     };
 
-    const handleStatusChange = (documentId, newStatus) => {
-        setUpdatedDocumentStatus(prevState => ({
-            ...prevState,
-            [documentId]: newStatus
-        }));
-    };
-
-    const handleSave = async (document) => {
+    const handleApprove = async (documentId, status) => {
         try {
-            const newStatus = updatedDocumentStatus[document.document_Submitted_id];
-            if (newStatus) {
-                await updateSubmittedDocument(data[0].token, document.document_Submitted_id, newStatus,data[0].user_id);
+            if (!validateToken()) return;
+
+            if (!documentId) {
+                toast.error("Invalid document selection", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                });
+                return;
+            }
+
+            const response = await updateSubmittedDocument(data[0].token, documentId, {
+                Status: status,
+                Approved_by: data[0].user_id
+            });
+            console.log(response.data)
+            if (response.status === 200) {
+                toast.success(`Document ${status ? 'approved' : 'rejected'} successfully`, {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                });
+                await fetchDocuments();
+            } else {
+                throw new Error(`Failed to ${status ? 'approve' : 'reject'} document`);
             }
         } catch (error) {
-            console.error("Error saving status:", error);
+            toast.error(error.message || `Failed to ${status ? 'approve' : 'reject'} document`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+            });
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <span className="ml-2">Loading documents...</span>
+            </div>
+        );
+    }
 
     return (
-        <div className='rounded-md border'>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className='text-center'>Candidate</TableHead>
-                        <TableHead className='text-center'>Job Title</TableHead>
-                        <TableHead className='text-center'>Applied Date</TableHead>
-                        <TableHead className='text-center'>Status</TableHead>
-                        <TableHead className='text-center'>See Document</TableHead>
-                        <TableHead className='text-center'>Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {documents && documents.map(document => (
-                        <TableRow key={document.document_Submitted_id}>
-                            <TableCell className='text-center'>{document.candidate.candidate_name}</TableCell>
-                            <TableCell className='text-center'>{document.job.job_title}</TableCell>
-                            <TableCell className='text-center'>
-                                {new Date(document.submitted_date).toLocaleDateString()}
-                            </TableCell>
-                            <TableCell className='text-center'>
-                                <div className="flex justify-center items-center">
-                                    <Select
-                                        value={updatedDocumentStatus[document.document_Submitted_id]}
-                                        onValueChange={(value) => handleStatusChange(document.document_Submitted_id, value)}
-                                    >
-                                        <SelectTrigger className="w-[200px]">
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem
-                                                key="true"
-                                                value={true}
-                                            >
-                                                Accepted
-                                            </SelectItem>
-                                            <SelectItem
-                                                key="false"
-                                                value={false}
-                                            >
-                                                Rejected
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </TableCell>
-                            <TableCell className="text-center">
-                                <a onClick={() => handleOpenFile(document.candidate.cV_Path)} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                    See Document
-                                </a>
-                            </TableCell>
-                            <TableCell className="text-center">
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8 text-red-500 hover:text-red-600"
-                                                onClick={() => handleDelete(document)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Delete candidate</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8 text-blue-500 hover:text-blue-600"
-                                                onClick={() => handleSave(document)}
-                                            >
-                                                <Save className="h-4 w-4" />
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Save status</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            {showDeleteDialog && <DeleteDocument showDeleteDialog={showDeleteDialog} setShowDeleteDialog={setShowDeleteDialog} deleteDocument={deleteDocument} />}
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Submitted Documents</CardTitle>
+            </CardHeader>
+            <CardContent>
+                {documents.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">
+                        No documents found
+                    </div>
+                ) : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="text-center">Candidate</TableHead>
+                                <TableHead className="text-center">Job</TableHead>
+                                <TableHead className="text-center">Document Type</TableHead>
+                                <TableHead className="text-center">Status</TableHead>
+                                <TableHead className="text-center">Document</TableHead>
+                                <TableHead className="text-center">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {documents.map((doc) => (
+                                <TableRow key={doc.document_id}>
+                                    <TableCell className="text-center">
+                                        {doc.candidate?.candidate_name || 'N/A'}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {doc.job?.job_title || 'N/A'}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        {doc.document_Type?.document_name || 'N/A'}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        <span className={`px-2 py-1 rounded-full text-sm ${
+                                            doc.status ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {doc.status ? 'Approved' : 'Rejected'}
+                                        </span>
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        <Button
+                                            variant="link"
+                                            onClick={() => handleOpenFile(doc.document_path)}
+                                            disabled={!doc.document_path}
+                                        >
+                                            View Document
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-center space-x-2">
+                                            {doc.created_at === doc.updated_at && (
+                                                <>
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-8 w-8 text-green-500 hover:text-green-600"
+                                                                    onClick={() => handleApprove(doc.document_Submitted_id, true)}
+                                                                >
+                                                                    <Check className="h-4 w-4" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Approve Document</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-8 w-8 text-red-500 hover:text-red-600"
+                                                                    onClick={() => handleApprove(doc.document_Submitted_id, false)}
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Reject Document</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </>
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
+            </CardContent>
+        </Card>
     );
 };
 

@@ -14,10 +14,13 @@ namespace Recruitment_Process_Management_System.Services
         private readonly ISkillRepository _skillRepository;
         private readonly IPreferred_Job_SkillRepository _preferred_Job_SkillRepository;
 
+        private readonly ICandidate_DetailsRepository _candidate_DetailsRepository;
+
 
         public JobsService(IJobsRepository jobsRepository,IUserRepository userRepository,
         IJobStatusRepository jobStatusRepository,IRequired_Job_SkillRepository required_Job_SkillRepository
-        ,ISkillRepository skillRepository,IPreferred_Job_SkillRepository preferred_Job_SkillRepository)
+        ,ISkillRepository skillRepository,IPreferred_Job_SkillRepository preferred_Job_SkillRepository,
+        ICandidate_DetailsRepository candidate_DetailsRepository)
         {
             _jobsRepository = jobsRepository;
             _userRepository = userRepository;
@@ -25,6 +28,7 @@ namespace Recruitment_Process_Management_System.Services
             _required_Job_SkillRepository = required_Job_SkillRepository;
             _skillRepository = skillRepository;
             _preferred_Job_SkillRepository = preferred_Job_SkillRepository;
+            _candidate_DetailsRepository = candidate_DetailsRepository;
         }
 
         public async Task<bool> deleteJob(int Job_id) {
@@ -69,12 +73,29 @@ namespace Recruitment_Process_Management_System.Services
 
             var responseUser = await _userRepository.getUserById(jobsDTO.Created_by);
             var jobStatus = await _jobStatusRepository.GetJobStatusById(jobsDTO.Job_Status_id);
+            var candidate = await _candidate_DetailsRepository.getCandidate_DetailsById(jobsDTO.Job_Selected_Candidate_id);
+
+            if(candidate == null)
+            throw new Exception("Selected Candidate Not Found");
 
             if(responseUser == null)
             throw new Exception("User Not Found");
 
             if(jobStatus == null)
             throw new Exception("Job Status Not Found");
+
+            if(jobsDTO.Job_Status_id == 4)
+            {
+                Console.WriteLine(jobsDTO.Job_Status_id);
+                UserDTO user = new UserDTO{
+                name = candidate.Candidate_name,
+                email = candidate.Candidate_email,
+                contact = candidate.PhoneNo.ToString(),
+                password = candidate.Candidate_password
+                };
+                await _userRepository.saveUser(user);
+                // await _candidate_DetailsRepository.deleteCandidate_Details(candidate);
+            }
 
             existingJobs.Job_title = jobsDTO.Job_title;
             existingJobs.Job_description = jobsDTO.Job_description;
@@ -87,6 +108,7 @@ namespace Recruitment_Process_Management_System.Services
             existingJobs.Updated_at = DateTime.Now;
             return await _jobsRepository.updateJob(existingJobs);
         } 
+
          public async Task<IEnumerable<Job_Status>> getAllJobStatus() 
         {
             return await _jobStatusRepository.getAllJobStatus();

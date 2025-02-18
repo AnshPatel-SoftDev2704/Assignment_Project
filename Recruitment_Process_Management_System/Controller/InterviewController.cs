@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Process_Management_System.Models;
 using Recruitment_Process_Management_System.Services;
@@ -7,6 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,HR,Interviewer,Recruiter,Candidate")]
     public class InterviewController : ControllerBase
     {
         private readonly IInterviewService _interviewService;
@@ -16,6 +18,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,HR,Interviewer,Recruiter,Candidate")]
         public async Task<ActionResult<IEnumerable<Interview>>> getAllInterview()
         {
             try{
@@ -302,6 +305,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost("SaveFeedback")]
+        [Authorize(Roles = "HR,Interviewer")]
         public async Task<ActionResult<Feedback>> saveFeedback(FeedbackDTO feedbackDTO)
         {
             if(!this.ModelState.IsValid)
@@ -321,6 +325,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPut("UpdateFeedback/{Feedback_id}")]
+        [Authorize(Roles = "HR,Interviewer")]
         public async Task<ActionResult<Feedback>> updateFeedback(int Feedback_id,FeedbackDTO feedbackDTO)
         {
             if(!this.ModelState.IsValid)

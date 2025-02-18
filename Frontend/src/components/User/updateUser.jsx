@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
-import { updateUser, getAllUser, getAllUserRoles, saveUserRoles} from '@/services/Users/api';
+import { updateUser, getAllUser, getAllUserRoles, saveUserRoles, getAllRole} from '@/services/Users/api';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUser } from '@/store/Users/actions';
 import { getRole } from '@/store/Roles/actions';
@@ -51,15 +51,17 @@ const UpdateUser = ({
   const [selectedRoles,setSelectedRoles] = useState([])
   const [updatedRoles,setUpdatedRoles] = useState([])
   const dispatch = useDispatch()
-  const roles = useSelector((state) => state.Roles)
+  const [roles,setRoles] = useState([])
   useEffect(()=>{
       const fetchData = async () => {
           let response = await getAllUserRoles(user[0].token)
+          const role = await getAllRole(user[0].token)
           response = response.data.filter(userroles => userroles.user_id === editUser.user_id)
           const filteredRoles = response
           .filter(item => item.role.role_id > 0)
           .map(item => item.role);          
           setSelectedRoles(filteredRoles)
+          setRoles(role.data)
       }
       fetchData()
   },[])
@@ -67,7 +69,7 @@ const UpdateUser = ({
 
   const handleAddRole = () => {
       if (!(selectedRole && selectedRoles.find(role => role.role_id === parseInt(selectedRole)))) {
-          const roleToAdd = roles[0].find(role => role.role_id === parseInt(selectedRole));
+          const roleToAdd = roles.find(role => role.role_id === parseInt(selectedRole));
           setSelectedRoles([...selectedRoles,roleToAdd])
           setUpdatedRoles([...updatedRoles,roleToAdd])
       }
@@ -175,7 +177,7 @@ const UpdateUser = ({
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
-                {roles[0].filter(role => 
+                {roles.filter(role => 
                     !selectedRoles.find(r => r.role_id === role.role_id)
                 ).map((role) => (
                     <SelectItem 

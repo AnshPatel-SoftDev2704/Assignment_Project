@@ -22,7 +22,8 @@ const Login = () => {
     dispatch(login(response))
     if(response.token === "")
     setError("Invalid Credentials")
-    else if(response.role === 'Candidate')
+    else 
+    if(response.role === 'Candidate')
     navigate("/candidate")
     else
     navigate("/dashboard")

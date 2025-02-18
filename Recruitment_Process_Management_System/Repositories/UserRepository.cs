@@ -34,9 +34,9 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public async Task<User> saveUser(UserDTO userDTO)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.name == userDTO.name);
-            if(existingUser != null)
-                return null;
+            // var existingUser = _context.Users.FirstOrDefault(u => u.name == userDTO.name);
+            // if(existingUser != null)
+            //     return null;
             User user = new User
             {
                 name = userDTO.name,
