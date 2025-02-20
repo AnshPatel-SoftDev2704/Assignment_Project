@@ -14,15 +14,16 @@ namespace Recruitment_Process_Management_System.Services
         private readonly IInterviewerRepository _interviewerRepository;
         private readonly IUserRepository _userRepository;
         private readonly INotifications_UsersService _notifications_UsersService;
-                private readonly IFeedbackRepository _feedbackRepository;
-
+        private readonly IFeedbackRepository _feedbackRepository;
+        private readonly ISkillRepository _skillRepository;
 
         public InterviewService(IInterviewRepository interviewRepository,
         ICandidate_Application_StatusRepository candidate_Application_StatusRepository,
         IInterview_StatusRepository interview_StatusRepository,
         IInterview_TypeRepository interview_TypeRepository,
         IInterviewerRepository interviewerRepository,IFeedbackRepository feedbackRepository,
-        IUserRepository userRepository,INotifications_UsersService notifications_UsersService)
+        IUserRepository userRepository,INotifications_UsersService notifications_UsersService,
+        ISkillRepository skillRepository)
         {
             _interviewRepository = interviewRepository;
             _candidate_Application_StatusRepository = candidate_Application_StatusRepository;
@@ -32,6 +33,7 @@ namespace Recruitment_Process_Management_System.Services
             _userRepository = userRepository;
             _notifications_UsersService = notifications_UsersService;
             _feedbackRepository = feedbackRepository;
+            _skillRepository = skillRepository;
         }
 
         public async Task<bool> deleteInterview(int Interview_id) {
@@ -242,12 +244,17 @@ namespace Recruitment_Process_Management_System.Services
             if(newUser == null)
             throw new Exception("User Not Found");
 
+            var technology = await _skillRepository.getSkillById(feedbackDTO.Technology);
+            if(technology == null)
+            throw new Exception("Technology Not Found");
+
             Feedback feedback = new Feedback{
                 Interview_id = feedbackDTO.Interview_id,
                 interview = newInterview,
                 User_id = feedbackDTO.User_id,
                 user = newUser,
                 Technology = feedbackDTO.Technology,
+                skill = technology,
                 rating = feedbackDTO.rating,
                 comments = feedbackDTO.comments,
                 submitted_date = feedbackDTO.submitted_date,

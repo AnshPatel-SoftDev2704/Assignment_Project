@@ -22,6 +22,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getAllInterview,saveFeedback } from '@/services/Interview/api';
 import { getAllUser } from '@/services/Users/api';
 import { toast } from 'react-toastify';
+import { getAllPreferredSkill, getAllRequiredSkill } from '@/services/Jobs/api';
 
 const AddFeedback = () => {
     const [feedbackData, setFeedbackData] = useState({
@@ -35,6 +36,9 @@ const AddFeedback = () => {
 
     const [interviews, setInterviews] = useState([]);
     const [users, setUsers] = useState([]);
+    const [skills,setSkills] = useState([])
+    const [requiredSkills,setRequiredSkills] = useState([])
+    const [preferredSkills,setPreferredSkills] = useState([])
 
     const data = useSelector((state) => state.Userdata);
 
@@ -43,11 +47,15 @@ const AddFeedback = () => {
             try {
                 const interviewResponse = await getAllInterview(data[0].token);
                 const userResponse = await getAllUser(data[0].token);
+                const requiredSkill = await getAllRequiredSkill(data[0].token)
+                const preferredSkill = await getAllPreferredSkill(data[0].token)
+                
                 if(interviewResponse.status === 403 ||userResponse.status === 403)
                     throw new Error("You are Not Allowed to Perform this Action")
+                setRequiredSkills(requiredSkill.data)
+                setPreferredSkills(preferredSkill.data)
                 setInterviews(interviewResponse.data);
                 setUsers(userResponse.data);
-                console.log(interviewResponse.data)
             } catch (error) {
                 toast.error(error.message || "Failed to Fetch Details");
             }
@@ -63,11 +71,20 @@ const AddFeedback = () => {
         }));
     };
 
+    const handleSkillChange = async () => {
+        setSkills([])
+        let job_id = interviews.filter(interview => interview.interview_id === parseInt(feedbackData.interview_id)).map(interview => interview.candidate_Application_Status.job.job_id)
+        const required = requiredSkills.filter(skill => skill.job_id === job_id[0]).map(skill => skill.skill);
+        const preferred = preferredSkills.filter(skill => skill.job_id === job_id[0]).map(skill => skill.skill)
+        setSkills([...required,...preferred])
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             feedbackData.interview_id = parseInt(feedbackData.interview_id)
-            feedbackData.user_id = parseInt(feedbackData.user_id)
+            feedbackData.user_id = parseInt(data[0].user_id)
+            feedbackData.technology = parseInt(feedbackData.technology)
             feedbackData.rating = parseInt(feedbackData.rating)
             feedbackData.submitted_date = new Date().toISOString();
             const result = await saveFeedback(data[0].token, feedbackData);
@@ -97,9 +114,10 @@ const AddFeedback = () => {
                         <Label>Interview</Label>
                         <Select
                             value={feedbackData.interview_id}
-                            onValueChange={(value) => 
+                            onValueChange={(value) =>{
+                                handleSkillChange()
                                 setFeedbackData(prev => ({ ...prev, interview_id: value }))
-                            }
+                            }}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select Interview" />
@@ -120,38 +138,25 @@ const AddFeedback = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <Label>User</Label>
+                        <Label>Technology</Label>
                         <Select
-                            value={feedbackData.user_id}
-                            onValueChange={(value) => 
-                                setFeedbackData(prev => ({ ...prev, user_id: value }))
-                            }
+                            value={feedbackData.technology}
+                            onValueChange={(value) => setFeedbackData({...feedbackData,technology:value})}
                         >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select User" />
+                            <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select required skill" />
                             </SelectTrigger>
                             <SelectContent>
-                                {users.map(user => (
-                                    <SelectItem 
-                                        key={user.user_id} 
-                                        value={user.user_id.toString()}
-                                    >
-                                        {user.name}
-                                    </SelectItem>
-                                ))}
+                            {skills.map(skill => 
+                                <SelectItem 
+                                key={skill.skill_id} 
+                                value={skill.skill_id.toString()}
+                                >
+                                {skill.skill_name}
+                                </SelectItem>
+                            )}
                             </SelectContent>
                         </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Technology</Label>
-                        <Input
-                            name="technology"
-                            value={feedbackData.technology}
-                            onChange={handleInputChange}
-                            placeholder="Enter technology"
-                            required
-                        />
                     </div>
 
                     <div className="space-y-2">

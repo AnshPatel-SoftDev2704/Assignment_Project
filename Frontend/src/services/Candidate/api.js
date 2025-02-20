@@ -77,16 +77,16 @@ const getAllCandidates = async (token) => {
     }
 }
 
-const saveCandidateSkill = async (token, data,user_id) => {
+const saveCandidateSkill = async (token, data) => {
     try {
         if (!token || !data) {
             throw new Error('Missing required parameters: token, data, or candidate_id');
         }
 
         const payload = {
-            Candidate_id: user_id,
-            Skill_id: data.skill_id,
-            Total_Skill_Work_experience: data.experience
+            Candidate_id: data.Candidate_id,
+            Skill_id: data.Skill_id,
+            Total_Skill_Work_experience: data.Total_Skill_Work_experience
         };
 
         const response = await axios.post(

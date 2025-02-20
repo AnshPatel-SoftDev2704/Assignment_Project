@@ -10,18 +10,24 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useSelector, useDispatch } from 'react-redux';
+import { getAllRequiredSkill,getAllPreferredSkill } from '@/services/Jobs/api';
 import { updateFeedback, getAllFeedback } from '@/services/Interview/api';
 
 const UpdateFeedback = ({ showEditDialog, setShowEditDialog, editFeedback }) => {
     const [feedbackData, setFeedbackData] = useState(editFeedback);
+    const [skills,setSkills] = useState([])
+    const [requiredSkills,setRequiredSkills] = useState([])
+    const [preferredSkills,setPreferredSkills] = useState([])
     const data = useSelector((state) => state.Userdata);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        setFeedbackData(editFeedback);
-    }, [editFeedback]);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFeedbackData(prev => ({
@@ -48,13 +54,7 @@ const UpdateFeedback = ({ showEditDialog, setShowEditDialog, editFeedback }) => 
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="px-6 space-y-4">
-                    <Label>Technology</Label>
-                    <Input
-                        name="technology"
-                        value={feedbackData.technology}
-                        onChange={handleInputChange}
-                    />
+                <div className="px-6 space-y-4">    
 
                     <Label>Rating</Label>
                     <Input
