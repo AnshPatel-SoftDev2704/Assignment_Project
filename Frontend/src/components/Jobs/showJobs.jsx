@@ -27,7 +27,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import DeleteJob from './deleteJobs';
 import UpdateJob from './updateJobs';
-import { getAllJobs } from '@/services/Jobs/api';
+import { getAllJobs, getAllPreferredSkill, getAllRequiredSkill } from '@/services/Jobs/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -38,6 +38,8 @@ const ShowJobs = () => {
     const [deletejob, setDeleteJob] = useState({});
     const [showDetailsDialog,setShowDetailsDialog] = useState(false)
     const [selectedJob,setSelectedJob] = useState({})
+    const [requiredSkills,setRequiredSkills] = useState([])
+    const [preferredSkills,setPreferredSkills] = useState([])
     const dispatch = useDispatch();
     const data = useSelector((state) => state.Userdata);
     const [jobs,setJobs] = useState([])
@@ -51,7 +53,10 @@ const ShowJobs = () => {
                 }
 
                 const response = await getAllJobs(data[0].token);
-                
+                const requiredSkill = await getAllRequiredSkill(data[0].token)
+                const preferredSkill = await getAllPreferredSkill(data[0].token)
+                setRequiredSkills(requiredSkill.data)
+                setPreferredSkills(preferredSkill.data)
                 if (response.data) {
                     setJobs(response.data)
                     toast.success({
@@ -89,7 +94,6 @@ const ShowJobs = () => {
 
     const handleShowDetails = async (job) => {
         setShowDetailsDialog(true)
-        console.log(job)
         setSelectedJob(job)
     }
 
@@ -171,7 +175,7 @@ const ShowJobs = () => {
                     </TableBody>
                 </Table>
             </div>
-            {/* <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+            <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
                 <DialogContent className="max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Job Details</DialogTitle>
@@ -185,28 +189,31 @@ const ShowJobs = () => {
                                     <div className='space-y-2'>
                                         <p><span className='font-medium'>Title: </span>{selectedJob.job_title}</p>
                                         <p><span className='font-medium'>Decription: </span>{selectedJob.job_description}</p>
-                                        <p><span className='font-medium'>Status: </span>{selectedJob.job_Status.job_Status_name}</p>
                                         <p><span className='font-medium'>Id: </span>{selectedJob.job_id}</p>
                                         <p><span className='font-medium'>Closed Reason: </span>{selectedJob.job_Closed_reason}</p>
                                         <p><span className='font-medium'>Selected Candidate Id: </span>{selectedJob.job_Selected_Candidate_id}</p>
                                     </div>
                                 </div>
                                 <div className='space-y-4'>
-                                <div>
-                                    <h3 className='text-lg font-semibold mb-3'>Created By</h3>
-                                    <div className='space-y-2'>
-                                        <p><span className='font-medium'>Name: </span>{selectedJob.user.name}</p>
-                                        <p><span className='font-medium'>Email: </span>{selectedJob.user.email}</p>
-                                        <p><span className='font-medium'>Contact: </span>{selectedJob.user.contact}</p>
+                                    <div>
+                                    <h3 className="font-semibold mb-2">Required Skills:</h3>
+                                    <ul className="list-disc list-inside space-y-2">
+                                        {requiredSkills.map(skill => skill.job_id === selectedJob.job_id && (<li>{skill.skill.skill_name}</li>))}
+                                    </ul>
                                     </div>
-                                </div>
+                                    <div>
+                                    <h3 className="font-semibold mb-2">Preferred Skills:</h3>
+                                    <ul className="list-disc list-inside space-y-2">
+                                        {preferredSkills.map(skill =>skill.job_id === selectedJob.job_id && (<li>{skill.skill.skill_name}</li>))}
+                                    </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 )}
                 </DialogContent>
-            </Dialog> */}
+            </Dialog>
             {showEditDialog && <UpdateJob showEditDialog={showEditDialog} setShowEditDialog={setShowEditDialog} editJob={editJob} />}
             {showDeleteDialog && <DeleteJob showDeleteDialog={showDeleteDialog} setShowDeleteDialog={setShowDeleteDialog} deleteJobs={deletejob} />}
         </>

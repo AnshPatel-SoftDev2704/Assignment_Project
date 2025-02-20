@@ -16,7 +16,9 @@ public class Feedback
     [ForeignKey("User_id")]
     public User user{get;set;}
     [Required]
-    public string Technology{get;set;}
+    public int Technology{get;set;}
+    [ForeignKey("Technology")]
+    public Skill skill{get;set;}
     [Required]
     public int rating{get;set;}
     [Required]

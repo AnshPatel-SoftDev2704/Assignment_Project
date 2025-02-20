@@ -156,7 +156,19 @@ const getAllFeedback = async (token) => {
     }
     catch(error)
     {
-        return error;
+        if (error.response) {
+            console.error('Server Error:', {
+                status: error.response.status,
+                data: error.response.data
+            });
+            throw new Error(`Server error: ${error.response.data}`);
+        } else if (error.request) {
+            console.error('Network Error:', error.request);
+            throw new Error('Network error: Unable to reach the server');
+        } else {
+            console.error('Request Error:', error.message);
+            throw error;
+        }
     }
 }
 

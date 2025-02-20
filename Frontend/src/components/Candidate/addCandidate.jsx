@@ -97,17 +97,17 @@ const CreateCandidate = () => {
       });
       return false;
     }
-    if (!candidateData.PhoneNo.trim()) {
-      toast.error("Phone number is required", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      return false;
-    }
+    // if (!candidateData.PhoneNo.trim()) {
+    //   toast.error("Phone number is required", {
+    //     position: "top-right",
+    //     autoClose: 3000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //   });
+    //   return false;
+    // }
     if (!/^\d{10}$/.test(candidateData.PhoneNo)) {
       toast.error("Invalid phone number format", {
         position: "top-right",
@@ -153,7 +153,7 @@ const CreateCandidate = () => {
       
       if(response.status === 403)
       throw new Error("You Don't have Permission to Perform this Action")
-
+      console.log(response)
       for (const skill of selectedSkills) {
         const skillData = {
           Candidate_id: response.data.candidate_id,

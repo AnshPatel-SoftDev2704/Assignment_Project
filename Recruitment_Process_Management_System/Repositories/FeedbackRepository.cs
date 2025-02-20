@@ -22,7 +22,7 @@ namespace Recruitment_Process_Management_System.Repositories
 
         public async Task<IEnumerable<Feedback>> getAllFeedback()
         {
-            var responses = _context.Feedback.Include(a => a.interview.candidate_Application_Status).Include(i => i.interview.interview_Status).Include(i => i.interview.interview_Type).Include(cas => cas.interview.candidate_Application_Status.candidate_Details).Include(cas => cas.interview.candidate_Application_Status.job).Include(cas => cas.interview.candidate_Application_Status.application_Status).Include(cas => cas.interview.candidate_Application_Status.candidate_Details.role).Include(cas => cas.interview.candidate_Application_Status.job.job_Status).Include(cas => cas.interview.candidate_Application_Status.job.user).Include(f => f.user).ToList();
+            var responses = _context.Feedback.Include(a => a.interview.candidate_Application_Status).Include(i => i.interview.interview_Status).Include(i => i.interview.interview_Type).Include(cas => cas.interview.candidate_Application_Status.candidate_Details).Include(cas => cas.interview.candidate_Application_Status.job).Include(cas => cas.interview.candidate_Application_Status.application_Status).Include(cas => cas.interview.candidate_Application_Status.candidate_Details.role).Include(cas => cas.interview.candidate_Application_Status.job.job_Status).Include(cas => cas.interview.candidate_Application_Status.job.user).Include(f => f.user).Include(f => f.skill).ToList();
             return responses;
         }
 
