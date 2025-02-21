@@ -19,7 +19,7 @@ import { getAllInterviewType } from '@/services/Interview/api';
 import { getAllInterviewStatus } from '@/services/Interview/api';
 import { getAllUser } from '@/services/Users/api';
 import { getAllApplications } from '@/services/Candidate/api';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 const CreateInterview = () => {
     const [interviewData, setInterviewData] = useState({
@@ -88,14 +88,22 @@ const CreateInterview = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            
             interviewData.application_id = parseInt(interviewData.application_id)
             interviewData.interview_Status_id = parseInt(interviewData.interview_Status_id)
             interviewData.interview_Type_id = parseInt(interviewData.interview_Type_id)
             interviewData.number_of_round = parseInt(interviewData.number_of_round)
+            if(interviewData.number_of_round <= 0)
+            {   
+                toast.error("Enter Correct Interview Round Number")
+                return
+            }
+            
             const response = await saveInterview(data[0].token,interviewData)
             assignedInterviewers.forEach(async interviewer => {
                 const result = await saveInterviewer(data[0].token,response.data.interview_id,interviewer.user_id)
             });
+            toast.success("Interview Scheduled Successfully")
             setInterviewData({
                 application_id: '',
                 number_of_round: '',
@@ -112,6 +120,7 @@ const CreateInterview = () => {
     };
 
     return (
+        <>
         <Card>
             <CardHeader>
                 <CardTitle>Schedule New Interview</CardTitle>
@@ -127,7 +136,7 @@ const CreateInterview = () => {
                             }
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select interview type" />
+                                <SelectValue placeholder="Select Candidate" />
                             </SelectTrigger>
                             <SelectContent>
                                 {applications.map(app => (
@@ -286,6 +295,8 @@ const CreateInterview = () => {
                 </form>
             </CardContent>
         </Card>
+        <ToastContainer/>
+        </>
     );
 };
 

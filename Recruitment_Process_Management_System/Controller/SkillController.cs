@@ -8,7 +8,7 @@ namespace Recruitment_Process_Management_System.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "HR,Interviewer,Reviewer,Admin,Recruiter,Candidate")]
+    [Authorize(Roles = "Admin,Candidate")]
     public class SkillController : ControllerBase
     {
         private readonly ISkillService _skillService;
@@ -49,6 +49,7 @@ namespace Recruitment_Process_Management_System.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Candidate")]
         public async Task<ActionResult<Skill>> saveSkill(Skill skill)
         {
             try{

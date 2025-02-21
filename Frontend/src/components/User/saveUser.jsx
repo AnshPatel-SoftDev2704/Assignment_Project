@@ -98,7 +98,8 @@ const SaveUser = () => {
             const response = await saveUser(user[0].token, userData);
             const result = await getAllUser(user[0].token);
             
-            if (result.status === 403) {
+            console.log(response)
+            if (response.status === 403) {
                 throw new Error("You are not allowed to perform this action");
             }
 
