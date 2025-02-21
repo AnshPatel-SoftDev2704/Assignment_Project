@@ -158,7 +158,7 @@ const CreateJob = () => {
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
-                {jobStatuses.map((status) => (
+                {jobStatuses.map((status) => status.job_Status_id == 1 && (
                   <SelectItem 
                     key={status.job_Status_id} 
                     value={status.job_Status_id.toString()}

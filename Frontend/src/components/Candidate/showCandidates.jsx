@@ -3,23 +3,17 @@ import { useSelector } from 'react-redux';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from '@/components/ui/button';
-import { Save, Trash2 } from "lucide-react";
+import { Save, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { getAllCandidates, getFile } from '@/services/Candidate/api';
 import DeleteCandidate from './deleteCandidate';
 import { toast } from 'react-toastify';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 
 const ShowCandidates = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [deleteCandidate, setDeleteCandidate] = useState(null);
     const [candidates, setCandidates] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const data = useSelector((state) => state.Userdata);
 
     useEffect(() => {
@@ -67,7 +61,6 @@ const ShowCandidates = () => {
             }
 
             const response = await getFile(data[0].token, filepath);
-            console.log(filepath)
             if (response.status === 200) {
                 window.open(`http://localhost:5195/api/Document_Submitted/GetFile?filepath=${encodeURI(filepath)}`, '_blank');
             } else {
@@ -81,6 +74,21 @@ const ShowCandidates = () => {
         }
     };
 
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+        
+        const sortedCandidates = [...candidates].sort((a, b) => {
+            if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+            if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
+        setCandidates(sortedCandidates);
+    };
 
     if (loading) {
         return <div className="flex justify-center items-center h-64">Loading candidates...</div>;
@@ -91,10 +99,14 @@ const ShowCandidates = () => {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className='text-center'>Name</TableHead>
+                        <TableHead className='text-center cursor-pointer' onClick={() => handleSort('candidate_name')}>
+                            Name {sortConfig.key === 'candidate_name' && (sortConfig.direction === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
+                        </TableHead>
                         <TableHead className='text-center'>Email</TableHead>
                         <TableHead className='text-center'>Phone</TableHead>
-                        <TableHead className='text-center'>Experience</TableHead>
+                        <TableHead className='text-center cursor-pointer' onClick={() => handleSort('candidate_Total_Work_Experience')}>
+                            Experience {sortConfig.key === 'candidate_Total_Work_Experience' && (sortConfig.direction === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
+                        </TableHead>
                         <TableHead className='text-center'>CV</TableHead>
                         <TableHead className='text-center'>Actions</TableHead>
                     </TableRow>

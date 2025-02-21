@@ -45,7 +45,7 @@ namespace Recruitment_Process_Management_System.Controllers
             }
         }
             
-        [Authorize(Roles ="Admin,HR,Interviewer")]
+        [Authorize(Roles ="Admin")]
         [HttpPost("saveUser")]
         public async Task<ActionResult<User>> saveUserAsync(UserDTO userDTO)
         {

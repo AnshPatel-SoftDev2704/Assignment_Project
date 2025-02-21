@@ -34,12 +34,13 @@ const CreateSkill = () => {
                 return;
             }
 
-            await saveSkill(data[0].token, skillData);
+            const response = await saveSkill(data[0].token, skillData);
             const result = await getAllSkill(data[0].token);
-
-            if(result.status === 403)
+            console.log(response)
+            if(response.status === 403)
                 throw new Error("You Don't have Permission to Perform this Action")
-
+            if(response.status === 200)
+            {
             dispatch(getSkill(result.data));
             setSkillData({
                 skill_name: '',
@@ -49,9 +50,13 @@ const CreateSkill = () => {
                 position: "top-right",
                 autoClose: 3000
             });
+        }
+        else
+        throw new Error("You Don't have Permission to Perform this Action")
+
         } catch (error) {
             console.error("Error saving skill:", error);
-            toast.error("Failed to create skill", {
+            toast.error(error.message || "Failed to create skill", {
                 position: "top-right",
                 autoClose: 3000
             });

@@ -90,8 +90,9 @@ const UpdateInterview = ({ showEditDialog, setShowEditDialog, editInterview }) =
 
     const handleUpdate = async () => {
         try {
+             if(editFormData.number_of_round <= 0)
+                toast.error("Enter Correct Interview Round Number")
             const response = await updateInterview(data[0].token,editFormData.interview_id,editFormData)
-            console.log(updatedInterviewers)
             updatedInterviewers.forEach(interviewer => {
                 const result = saveInterviewer(data[0].token,response.data.interview_id,interviewer.user_id)
             });
